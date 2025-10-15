@@ -115,7 +115,16 @@ SIMPLE_JWT = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://localhost:5173",
+    "http://localhost:8080",
+    "http://127.0.0.1:8081",
+]
+
+# Backends Allowed
+AUTHENTICATION_BACKENDS = [
+    'users.backends.EmailBackend',
+   'django.contrib.auth.backends.ModelBackend',
 ]
 
 AUTH_USER_MODEL = 'users.User'
