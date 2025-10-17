@@ -41,7 +41,7 @@ export const Footer: React.FC = () => {
       {/* Animated Background */}
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]"></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-      
+
       {/* Floating Orbs */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/10 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -87,14 +87,20 @@ export const Footer: React.FC = () => {
               whileHover={{ scale: 1.05, y: -5 }}
               className="group relative bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all hover:bg-white/10 cursor-pointer overflow-hidden"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity`}></div>
-              <div className={`bg-gradient-to-br ${stat.color} bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform inline-block`}>
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity`}
+              ></div>
+              <div
+                className={`bg-gradient-to-br ${stat.color} bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform inline-block`}
+              >
                 {stat.icon}
               </div>
               <div className="text-3xl font-black mb-1 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                 {stat.number}
               </div>
-              <div className="text-gray-400 text-sm font-medium">{stat.label}</div>
+              <div className="text-gray-400 text-sm font-medium">
+                {stat.label}
+              </div>
             </motion.div>
           ))}
         </motion.div>
@@ -110,7 +116,7 @@ export const Footer: React.FC = () => {
             {/* Decorative Elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl"></div>
-            
+
             <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="text-center md:text-left flex-1">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-sm font-semibold mb-4">
@@ -121,8 +127,8 @@ export const Footer: React.FC = () => {
                   Stay Ahead of the Curve
                 </h3>
                 <p className="text-white/90 text-lg">
-                  Join 10,000+ students getting weekly opportunities, career tips,
-                  and exclusive insights delivered to your inbox.
+                  Join 10,000+ students getting weekly opportunities, career
+                  tips, and exclusive insights delivered to your inbox.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto min-w-[300px]">
@@ -178,11 +184,15 @@ export const Footer: React.FC = () => {
             <div className="flex flex-wrap gap-3 mb-6">
               <div className="flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 hover:border-cyan-500/50 transition-all group">
                 <Shield className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
-                <span className="text-xs text-gray-300 font-medium">Secure Platform</span>
+                <span className="text-xs text-gray-300 font-medium">
+                  Secure Platform
+                </span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 hover:border-fuchsia-500/50 transition-all group">
                 <Award className="w-4 h-4 text-fuchsia-400 group-hover:scale-110 transition-transform" />
-                <span className="text-xs text-gray-300 font-medium">Verified Users</span>
+                <span className="text-xs text-gray-300 font-medium">
+                  Verified Users
+                </span>
               </div>
             </div>
 
@@ -222,9 +232,7 @@ export const Footer: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                   className={`w-11 h-11 bg-gradient-to-br ${social.gradient} rounded-xl flex items-center justify-center transition-all shadow-lg hover:shadow-xl`}
                 >
-                  <div className="text-white">
-                    {social.icon}
-                  </div>
+                  <div className="text-white">{social.icon}</div>
                 </motion.a>
               ))}
             </div>

@@ -162,7 +162,8 @@ body.menu-open {
 }
 
 /* Ensure buttons and links are tappable */
-button, a {
+button,
+a {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   touch-action: manipulation;
 }

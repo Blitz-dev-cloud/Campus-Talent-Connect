@@ -1,6 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Menu, X, Home, User, ChevronDown, LogIn, UserPlus } from "lucide-react";
+import {
+  LogOut,
+  Menu,
+  X,
+  Home,
+  User,
+  ChevronDown,
+  LogIn,
+  UserPlus,
+} from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "./NotificationBell";
@@ -13,13 +22,13 @@ const Navbar = ({ isOpen, setIsOpen }) => {
   // Lock body scroll when mobile menu is open
   React.useEffect(() => {
     if (isOpen) {
-      document.body.classList.add('menu-open');
+      document.body.classList.add("menu-open");
     } else {
-      document.body.classList.remove('menu-open');
+      document.body.classList.remove("menu-open");
     }
-    
+
     return () => {
-      document.body.classList.remove('menu-open');
+      document.body.classList.remove("menu-open");
     };
   }, [isOpen]);
 
