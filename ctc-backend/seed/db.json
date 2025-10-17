@@ -1,0 +1,449 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "student@test.com",
+      "password": "password123",
+      "role": "student",
+      "full_name": "John Student"
+    },
+    {
+      "id": 2,
+      "email": "alumni@test.com",
+      "password": "password123",
+      "role": "alumni",
+      "full_name": "Jane Alumni"
+    },
+    {
+      "id": 3,
+      "email": "faculty@test.com",
+      "password": "password123",
+      "role": "faculty",
+      "full_name": "Dr. Smith"
+    },
+    {
+      "id": 1760411202819,
+      "email": "muwekodu@mailinator.com",
+      "password": "Pa$$w0rd!",
+      "role": "alumni"
+    },
+    {
+      "id": 1760411311565,
+      "email": "abcd@gmail.com",
+      "password": "abcd1234",
+      "role": "student"
+    },
+    {
+      "id": 1760411349278,
+      "email": "abcde@gmail.com",
+      "password": "abcd1234",
+      "role": "student"
+    },
+    {
+      "id": 1760413553976,
+      "email": "sounak1629@gmail.com",
+      "password": "12345678",
+      "role": "student"
+    },
+    {
+      "id": 1760414579389,
+      "email": "abcdef@gmail.com",
+      "password": "abcdabcd",
+      "role": "alumni"
+    },
+    {
+      "id": 1760415375815,
+      "email": "aspas@valo.com",
+      "password": "aspasvalo",
+      "role": "faculty"
+    }
+  ],
+  "profiles": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "full_name": "John Student",
+      "bio": "Computer Science student passionate about AI",
+      "phone": "+1234567890",
+      "location": "New York, NY",
+      "skills": ["Python", "JavaScript", "React", "Machine Learning"],
+      "role": "student"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "full_name": "Jane Alumni",
+      "bio": "Software Engineer at Tech Corp",
+      "phone": "+1234567891",
+      "location": "San Francisco, CA",
+      "skills": ["Java", "Spring", "AWS", "Microservices"],
+      "role": "alumni"
+    },
+    {
+      "id": 3,
+      "user_id": 3,
+      "full_name": "Dr. Smith",
+      "bio": "Professor of Computer Science",
+      "phone": "+1234567892",
+      "location": "Boston, MA",
+      "skills": ["Research", "Teaching", "AI", "Data Science"],
+      "role": "faculty"
+    },
+    {
+      "id": 1760411202820,
+      "user_id": 1760411202819,
+      "bio": "",
+      "phone": "",
+      "location": "",
+      "skills": [],
+      "role": "alumni"
+    },
+    {
+      "id": 1760411311567,
+      "user_id": 1760411311565,
+      "bio": "",
+      "phone": "",
+      "location": "",
+      "skills": [],
+      "role": "student"
+    },
+    {
+      "id": 1760411349279,
+      "user_id": 1760411349278,
+      "bio": "",
+      "phone": "",
+      "location": "",
+      "skills": [],
+      "role": "student"
+    },
+    {
+      "id": 1760413553978,
+      "user_id": 1760413553976,
+      "bio": "",
+      "phone": "8900560169",
+      "location": "Chennai, India",
+      "skills": ["c++"],
+      "role": "student",
+      "full_name": "Sounak Maity"
+    },
+    {
+      "id": 1760414579390,
+      "user_id": 1760414579389,
+      "bio": "",
+      "phone": "",
+      "location": "",
+      "skills": [],
+      "role": "alumni",
+      "full_name": "abcdef"
+    },
+    {
+      "id": 1760415375817,
+      "user_id": 1760415375815,
+      "bio": "",
+      "phone": "",
+      "location": "",
+      "skills": [],
+      "role": "faculty"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": 1,
+      "title": "Software Engineering Intern",
+      "description": "Join our team as a software engineering intern. Work on real-world projects with cutting-edge technologies.",
+      "type": "internship",
+      "company": "Tech Corp",
+      "location": "San Francisco, CA",
+      "salary": "5000",
+      "posted_by": 2,
+      "created_at": "2025-10-01T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Full Stack Developer",
+      "description": "We're looking for a talented full stack developer to join our growing team.",
+      "type": "job",
+      "company": "StartupXYZ",
+      "location": "Remote",
+      "salary": "80000",
+      "posted_by": 2,
+      "created_at": "2025-10-05T14:30:00Z"
+    },
+    {
+      "id": 3,
+      "title": "AI Research Assistant",
+      "description": "Research opportunity in Natural Language Processing and Machine Learning.",
+      "type": "research",
+      "company": "Computer Science Department",
+      "location": "Boston, MA",
+      "salary": "",
+      "posted_by": 3,
+      "created_at": "2025-10-08T09:15:00Z"
+    },
+    {
+      "id": 4,
+      "title": "Frontend Developer Internship",
+      "description": "Learn modern frontend development with React and TypeScript.",
+      "type": "internship",
+      "company": "WebDev Agency",
+      "location": "New York, NY",
+      "salary": "4500",
+      "posted_by": 2,
+      "created_at": "2025-10-10T11:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "Recusandae Non ad e",
+      "description": "Irure facilis occaec",
+      "type": "internship",
+      "company": "Laborum in ut debiti",
+      "location": "Id Nam sint commodo ",
+      "salary": "11",
+      "posted_by": 2,
+      "created_at": "2025-10-01T10:00:00Z"
+    },
+    {
+      "id": 6,
+      "title": "Enim non id earum a",
+      "description": "Aliquid quidem do qu",
+      "type": "internship",
+      "company": "Molestiae minus omni",
+      "location": "Commodo tempor fugia",
+      "salary": "61",
+      "posted_by": 2,
+      "created_at": "2025-10-01T10:00:00Z"
+    },
+    {
+      "id": 7,
+      "title": "Quidem qui omnis con",
+      "description": "Velit tempor tempor",
+      "type": "internship",
+      "company": "Omnis reiciendis ut ",
+      "location": "Quod iusto aliquam e",
+      "salary": "80",
+      "posted_by": 2,
+      "created_at": "2025-10-01T10:00:00Z"
+    },
+    {
+      "id": 1760414827538,
+      "title": "Quibusdam rerum itaq",
+      "description": "Dolore vel asperiore",
+      "type": "research",
+      "company": "Quasi Nam molestiae ",
+      "location": "Sunt voluptatibus be",
+      "salary": "95",
+      "posted_by": 1760414579389,
+      "created_at": "2025-10-14T04:07:07.538Z"
+    },
+    {
+      "id": 1760414918961,
+      "title": "Irure eveniet labor",
+      "description": "Eos asperiores ipsum",
+      "type": "job",
+      "company": "Tempora esse ex ea e",
+      "location": "Possimus dolorem do",
+      "salary": "69",
+      "posted_by": 1760414579389,
+      "created_at": "2025-10-14T04:08:38.961Z"
+    },
+    {
+      "id": 1760415408940,
+      "title": "Machine Learning",
+      "description": "Ipsum molestias eum ",
+      "type": "research",
+      "company": "Autem sed ut quia mo",
+      "location": "Iste aliquid digniss",
+      "salary": "58",
+      "posted_by": 1760415375815,
+      "created_at": "2025-10-14T04:16:48.940Z"
+    },
+    {
+      "id": 1760415408941,
+      "title": "Aut qui aliquid eius",
+      "description": "Non in velit magni ",
+      "type": "research",
+      "company": "Aliquam in est nost",
+      "location": "Repellendus Commodo",
+      "salary": "53",
+      "posted_by": 1760415375815,
+      "created_at": "2025-10-14T04:27:32.744Z"
+    },
+    {
+      "id": 1760415408942,
+      "title": "Aut quidem nostrud l",
+      "description": "Autem odit in minima",
+      "type": "research",
+      "company": "Reiciendis blanditii",
+      "location": "Magna sapiente quide",
+      "salary": "17",
+      "posted_by": 1760415375815,
+      "created_at": "2025-10-14T04:31:41.066Z"
+    },
+    {
+      "id": 1760415408943,
+      "title": "Rerum sed neque odio",
+      "description": "Dolores ad cumque fu",
+      "type": "research",
+      "company": "Voluptatem voluptat",
+      "location": "Illo quia distinctio",
+      "salary": "73",
+      "posted_by": 1760415375815,
+      "created_at": "2025-10-14T04:40:26.096Z"
+    },
+    {
+      "title": "Adipisci deserunt al",
+      "description": "Laborum Occaecat vo",
+      "type": "research",
+      "company": "Repellendus Nisi la",
+      "location": "Harum at voluptas no",
+      "salary": "30",
+      "posted_by": 1760415375815,
+      "created_at": "2025-10-14T05:35:12.564Z",
+      "id": 1760415408944
+    },
+    {
+      "title": "Machine Learning",
+      "description": "new",
+      "type": "research",
+      "company": "CSE",
+      "location": "AB1",
+      "salary": "20",
+      "posted_by": 1760415375815,
+      "created_at": "2025-10-14T05:37:23.048Z",
+      "id": 1760415408945
+    },
+    {
+      "title": "new-research-1",
+      "description": "Eu ea doloremque pra",
+      "type": "research",
+      "company": "Eum pariatur Est re",
+      "location": "Aute sint saepe eum",
+      "salary": "67",
+      "posted_by": 1760415375815,
+      "created_at": "2025-10-14T05:44:06.097Z",
+      "id": 1760415408946
+    }
+  ],
+  "applications": [
+    {
+      "id": 1,
+      "opportunity": 1,
+      "opportunity_title": "Software Engineering Intern",
+      "student_id": 1,
+      "status": "pending",
+      "created_at": "2025-10-12T10:30:00Z"
+    },
+    {
+      "id": 2,
+      "opportunity": 3,
+      "opportunity_title": "AI Research Assistant",
+      "student_id": 1,
+      "status": "accepted",
+      "created_at": "2025-10-09T14:20:00Z"
+    },
+    {
+      "id": 1760411375329,
+      "opportunity": 1,
+      "opportunity_title": "Software Engineering Intern",
+      "student_id": 1760411349278,
+      "status": "pending",
+      "created_at": "2025-10-14T03:09:35.329Z"
+    },
+    {
+      "id": 1760411387691,
+      "opportunity": 5,
+      "opportunity_title": "Recusandae Non ad e",
+      "student_id": 1760411349278,
+      "status": "pending",
+      "created_at": "2025-10-14T03:09:47.691Z"
+    },
+    {
+      "id": 1760414002928,
+      "opportunity": 1,
+      "opportunity_title": "Software Engineering Intern",
+      "student_id": 1760413553976,
+      "status": "pending",
+      "created_at": "2025-10-14T03:53:22.928Z"
+    },
+    {
+      "id": 1760414011587,
+      "opportunity": 5,
+      "opportunity_title": "Recusandae Non ad e",
+      "student_id": 1760413553976,
+      "status": "pending",
+      "created_at": "2025-10-14T03:53:31.587Z"
+    },
+    {
+      "id": 1760414333949,
+      "opportunity": 6,
+      "opportunity_title": "Enim non id earum a",
+      "student_id": 1760413553976,
+      "status": "pending",
+      "created_at": "2025-10-14T03:58:53.949Z"
+    },
+    {
+      "id": 1760414631202,
+      "opportunity": 7,
+      "opportunity_title": "Quidem qui omnis con",
+      "student_id": 1760413553976,
+      "status": "pending",
+      "created_at": "2025-10-14T04:03:51.202Z"
+    },
+    {
+      "id": 1760416771545,
+      "opportunity": 1760415408942,
+      "opportunity_title": "Aut quidem nostrud l",
+      "student_id": 1760413553976,
+      "status": "accepted",
+      "created_at": "2025-10-14T04:39:31.545Z"
+    },
+    {
+      "id": 1760416780618,
+      "opportunity": 1760415408941,
+      "opportunity_title": "Aut qui aliquid eius",
+      "student_id": 1760413553976,
+      "status": "rejected",
+      "created_at": "2025-10-14T04:39:40.618Z"
+    },
+    {
+      "id": 1760416781742,
+      "opportunity": 1760415408940,
+      "opportunity_title": "Machine Learning",
+      "student_id": 1760413553976,
+      "status": "rejected",
+      "created_at": "2025-10-14T04:39:41.742Z"
+    },
+    {
+      "id": 1760417767330,
+      "opportunity": 1760415408943,
+      "opportunity_title": "Rerum sed neque odio",
+      "student_id": 1760413553976,
+      "status": "rejected",
+      "created_at": "2025-10-14T04:56:07.330Z"
+    },
+    {
+      "id": 1760420148964,
+      "opportunity": 1760415408944,
+      "opportunity_title": "Adipisci deserunt al",
+      "student_id": 1760413553976,
+      "status": "rejected",
+      "created_at": "2025-10-14T05:35:48.964Z"
+    },
+    {
+      "id": 1760420278742,
+      "opportunity": 1760415408945,
+      "opportunity_title": "Machine Learning",
+      "student_id": 1760413553976,
+      "status": "accepted",
+      "created_at": "2025-10-14T05:37:58.742Z"
+    },
+    {
+      "id": 1760420677179,
+      "opportunity": 1760415408946,
+      "opportunity_title": "new-research-1",
+      "student_id": 1760413553976,
+      "status": "accepted",
+      "created_at": "2025-10-14T05:44:37.179Z"
+    }
+  ]
+}
