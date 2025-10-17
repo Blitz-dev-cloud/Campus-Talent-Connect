@@ -50,6 +50,7 @@
 ## ✨ Features
 
 ### For Students 👨‍🎓
+
 - **Profile Management**: Create and maintain comprehensive profiles with skills, education, and experience
 - **Opportunity Discovery**: Browse internships, jobs, and research opportunities
 - **Application Tracking**: Track application status in real-time
@@ -57,18 +58,21 @@
 - **Notifications**: Receive real-time updates on new opportunities
 
 ### For Alumni 🎓
+
 - **Mentorship**: Offer guidance and support to current students
 - **Job Posting**: Share career opportunities from their companies
 - **Networking**: Connect with fellow alumni and current students
 - **Profile Showcase**: Display professional achievements and career journey
 
 ### For Faculty 👩‍🏫
+
 - **Research Opportunities**: Post research assistant positions
 - **Student Collaboration**: Find talented students for projects
 - **Mentorship Programs**: Guide students in academic and career paths
 - **Application Review**: Efficiently review and manage student applications
 
 ### UI/UX Features 🎨
+
 - **Aurora Nebula Theme**: Stunning gradient color scheme with indigo, purple, fuchsia, and cyan
 - **Custom Cursor**: Interactive circular cursor with smooth animations (desktop only)
 - **Responsive Design**: Fully optimized for mobile, tablet, and desktop
@@ -80,6 +84,7 @@
 ## 🛠 Tech Stack
 
 ### Frontend
+
 - **Framework**: React 19.1 with TypeScript
 - **Build Tool**: Vite 7.1
 - **Styling**: Tailwind CSS 4.1 (with custom Aurora Nebula theme)
@@ -91,6 +96,7 @@
 - **Notifications**: Sonner 2.0
 
 ### Backend
+
 - **Runtime**: Node.js
 - **Framework**: Express 5.1
 - **Database**: MongoDB with Mongoose 8.19
@@ -100,6 +106,7 @@
 - **Email Service**: Resend 6.1
 
 ### Development Tools
+
 - **Linting**: ESLint 9.36
 - **TypeScript**: 5.9
 - **Dev Server**: Nodemon 3.1 (backend hot-reload)
@@ -168,6 +175,7 @@ ctc-1/
 ### Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - **Node.js** (v18 or higher)
 - **npm** or **yarn**
 - **MongoDB Atlas account** (or local MongoDB instance)
@@ -237,6 +245,7 @@ npm run seed:mongodb
 ```
 
 This will create:
+
 - 3 test users (student, alumni, faculty)
 - Sample profiles
 - Mock opportunities
@@ -275,6 +284,7 @@ openssl rand -base64 32
 Run both frontend and backend concurrently:
 
 #### Terminal 1 - Backend
+
 ```bash
 cd ctc-backend
 npm run start:mongodb
@@ -283,6 +293,7 @@ npm run start:mongodb
 ```
 
 #### Terminal 2 - Frontend
+
 ```bash
 cd ctc-frontend
 npm run dev
@@ -293,6 +304,7 @@ npm run dev
 ### Production Build
 
 #### Build Frontend
+
 ```bash
 cd ctc-frontend
 npm run build
@@ -301,6 +313,7 @@ npm run build
 ```
 
 #### Start Backend
+
 ```bash
 cd ctc-backend
 npm start
@@ -309,6 +322,7 @@ npm start
 ### Available Scripts
 
 #### Backend Scripts
+
 ```bash
 npm start              # Start production server
 npm run start:mongodb  # Start MongoDB server
@@ -317,6 +331,7 @@ npm run seed:mongodb  # Seed database with test data
 ```
 
 #### Frontend Scripts
+
 ```bash
 npm run dev           # Start Vite dev server
 npm run build         # Build for production
@@ -329,6 +344,7 @@ npm run lint          # Run ESLint
 ## 📡 API Documentation
 
 ### Base URL
+
 ```
 http://localhost:8000/api
 ```
@@ -336,6 +352,7 @@ http://localhost:8000/api
 ### Authentication Endpoints
 
 #### Register User
+
 ```http
 POST /api/auth/register
 Content-Type: application/json
@@ -361,6 +378,7 @@ Response: 201 Created
 ```
 
 #### Login
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -385,6 +403,7 @@ Response: 200 OK
 ### Profile Endpoints
 
 #### Get All Profiles
+
 ```http
 GET /api/profiles
 Authorization: Bearer {token}
@@ -403,6 +422,7 @@ Response: 200 OK
 ```
 
 #### Get User's Profile
+
 ```http
 GET /api/profiles/user/:userId
 Authorization: Bearer {token}
@@ -418,6 +438,7 @@ Response: 200 OK
 ```
 
 #### Create Profile
+
 ```http
 POST /api/profiles
 Authorization: Bearer {token}
@@ -443,6 +464,7 @@ Response: 201 Created
 ```
 
 #### Update Profile
+
 ```http
 PUT /api/profiles/:id
 Authorization: Bearer {token}
@@ -459,6 +481,7 @@ Response: 200 OK
 ### Opportunity Endpoints
 
 #### Get All Opportunities
+
 ```http
 GET /api/opportunities
 Authorization: Bearer {token}
@@ -480,6 +503,7 @@ Response: 200 OK
 ```
 
 #### Create Opportunity
+
 ```http
 POST /api/opportunities
 Authorization: Bearer {token}
@@ -501,6 +525,7 @@ Response: 201 Created
 ### Application Endpoints
 
 #### Get User's Applications
+
 ```http
 GET /api/applications?user_id=507f1f77bcf86cd799439012
 Authorization: Bearer {token}
@@ -518,6 +543,7 @@ Response: 200 OK
 ```
 
 #### Submit Application
+
 ```http
 POST /api/applications
 Authorization: Bearer {token}
@@ -533,6 +559,7 @@ Response: 201 Created
 ```
 
 #### Update Application Status
+
 ```http
 PATCH /api/applications/:id
 Authorization: Bearer {token}
@@ -564,6 +591,7 @@ The application uses **JWT (JSON Web Tokens)** for authentication.
 All API endpoints except `/auth/register` and `/auth/login` require authentication.
 
 Include the token in request headers:
+
 ```http
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
@@ -577,6 +605,7 @@ Tokens expire after **24 hours**. Users need to re-login after expiration.
 ## 💾 Database Schema
 
 ### Users Collection
+
 ```javascript
 {
   _id: ObjectId,
@@ -590,6 +619,7 @@ Tokens expire after **24 hours**. Users need to re-login after expiration.
 ```
 
 ### Profiles Collection
+
 ```javascript
 {
   _id: ObjectId,
@@ -622,6 +652,7 @@ Tokens expire after **24 hours**. Users need to re-login after expiration.
 ```
 
 ### Opportunities Collection
+
 ```javascript
 {
   _id: ObjectId,
@@ -641,6 +672,7 @@ Tokens expire after **24 hours**. Users need to re-login after expiration.
 ```
 
 ### Applications Collection
+
 ```javascript
 {
   _id: ObjectId,
@@ -671,6 +703,7 @@ The application features a custom "Aurora Nebula" color scheme:
 ### Custom Cursor
 
 Desktop users experience an interactive custom cursor:
+
 - 16px circular dot (inner cursor)
 - 40px ring (outer cursor)
 - Smooth spring animations
@@ -689,18 +722,21 @@ Desktop users experience an interactive custom cursor:
 After seeding the database, use these credentials:
 
 ### Student Account
+
 ```
 Email: student@university.edu
 Password: password123
 ```
 
 ### Alumni Account
+
 ```
 Email: alumni@company.com
 Password: password123
 ```
 
 ### Faculty Account
+
 ```
 Email: faculty@university.edu
 Password: password123

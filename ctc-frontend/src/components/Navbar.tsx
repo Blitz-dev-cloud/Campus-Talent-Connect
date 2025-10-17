@@ -43,7 +43,7 @@ const Navbar = ({ isOpen, setIsOpen }) => {
     : [];
 
   return (
-    <nav className="sticky top-0 z-[9997] bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-200">
+    <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
