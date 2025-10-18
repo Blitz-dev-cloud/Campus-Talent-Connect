@@ -233,8 +233,8 @@ const FacultyDashboard = () => {
       } else {
         const newProfile = {
           ...editedProfile,
-          user_id: user.id,
-          role: user.role,
+          user_id: user?.id,
+          role: user?.role,
         };
         response = await api.post("/api/profiles", newProfile);
       }
@@ -242,8 +242,39 @@ const FacultyDashboard = () => {
       setEditedProfile(response.data);
       setIsEditing(false);
       toast.success("Profile updated successfully!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Save profile error:", error);
+      console.error("Error response:", error.response?.data);
+      
+      // If profile already exists, try to fetch and update it
+      if (error.response?.status === 400 && error.response?.data?.message?.includes("already exists")) {
+        try {
+          // Fetch all profiles and find the user's profile
+          const profilesRes = await api.get("/api/profiles");
+          const existingProfile = profilesRes.data.find(
+            (p: Profile) =>
+              String(p.user_id) === String(user?.id) ||
+              (p.user_id as any)?._id === user?.id ||
+              p.user_id === user?.id
+          );
+          
+          if (existingProfile) {
+            // Update the existing profile
+            const updateRes = await api.put(
+              `/api/profiles/${existingProfile._id}`,
+              editedProfile
+            );
+            setProfile(updateRes.data);
+            setEditedProfile(updateRes.data);
+            setIsEditing(false);
+            toast.success("Profile updated successfully!");
+            return;
+          }
+        } catch (retryError) {
+          console.error("Retry error:", retryError);
+        }
+      }
+      
       toast.error("Failed to update profile");
     }
   };
