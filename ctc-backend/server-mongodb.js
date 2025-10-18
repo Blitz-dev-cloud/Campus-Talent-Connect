@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profiles");
 const opportunityRoutes = require("./routes/opportunities");
 const applicationRoutes = require("./routes/applications");
+const userRoutes = require("./routes/users");
 
 // Import middleware
 const auth = require("./middleware/auth");
@@ -44,6 +45,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api/users", userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
