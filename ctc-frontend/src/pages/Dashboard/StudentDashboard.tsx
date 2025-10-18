@@ -284,15 +284,17 @@ const StudentDashboard = () => {
       return;
     }
 
-    if (!selectedOpportunity?.id) {
+    const opportunityId = selectedOpportunity?._id || selectedOpportunity?.id;
+    if (!opportunityId) {
       toast.error("Invalid opportunity selected.");
       return;
     }
 
     try {
       setIsSubmitting(true);
+      console.log("Submitting application for opportunity:", opportunityId);
       const response = await api.post("/api/applications", {
-        opportunity: selectedOpportunity.id,
+        opportunity: opportunityId,
         cover_letter: applicationForm.cover_letter,
         resume_base64: applicationForm.resume_base64,
         resume_name: applicationForm.resume_name,

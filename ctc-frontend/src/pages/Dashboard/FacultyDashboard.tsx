@@ -280,6 +280,12 @@ const FacultyDashboard = () => {
   };
   const handlePostResearch = async (e) => {
     e.preventDefault();
+    
+    if (!user?.id) {
+      toast.error("Please login again");
+      return;
+    }
+    
     try {
       setIsPosting(true);
       const opportunityData = {
@@ -289,9 +295,8 @@ const FacultyDashboard = () => {
         company: formData.company,
         location: formData.location,
         salary: formData.salary || "",
-        posted_by: user.id,
-        created_at: new Date().toISOString(),
       };
+      console.log("Posting opportunity:", opportunityData);
       const res = await api.post("/api/opportunities", opportunityData);
       const normalizedOpp = {
         ...res.data,
