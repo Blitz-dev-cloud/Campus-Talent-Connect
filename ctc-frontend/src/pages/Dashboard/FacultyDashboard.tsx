@@ -27,6 +27,7 @@ import api from "../../lib/api";
 // Type definitions
 interface Profile {
   _id?: string;
+  id?: string;
   user_id: string;
   full_name: string;
   bio: string;
@@ -183,7 +184,6 @@ const FacultyDashboard = () => {
       toast.success(
         `Application ${newStatus === "accepted" ? "accepted" : "rejected"}!`
       );
-      setSelectedApplication(null);
     } catch (error) {
       console.error("Application action error:", error);
       toast.error("Failed to update application");

@@ -24,15 +24,27 @@ import {
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
 
+interface Profile {
+  _id?: string;
+  id?: string;
+  user_id: string;
+  full_name: string;
+  bio: string;
+  phone: string;
+  location: string;
+  skills: string[];
+  role: string;
+}
+
 const AlumniDashboard = () => {
   const { user } = React.useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("profile");
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [opportunities, setOpportunities] = useState([]);
   const [applications, setApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProfile, setEditedProfile] = useState({});
+  const [editedProfile, setEditedProfile] = useState<Partial<Profile>>({});
   const [newSkill, setNewSkill] = useState("");
   const [formData, setFormData] = useState({
     title: "",
