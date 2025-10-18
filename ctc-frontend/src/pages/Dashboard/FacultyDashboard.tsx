@@ -46,6 +46,7 @@ interface Opportunity {
   location: string;
   salary: string;
   posted_by: string;
+  created_at?: string;
 }
 
 interface Application {
@@ -53,12 +54,14 @@ interface Application {
   _id?: string;
   opportunity: string;
   opportunity_id?: string;
+  opportunity_title?: string;
   student_id: string;
   status: string;
   cover_letter: string;
   resume_base64: string;
   resume_name: string;
   applied_date: string;
+  created_at?: string;
   student_name?: string;
   student_email?: string;
   student_phone?: string;
@@ -447,12 +450,12 @@ const FacultyDashboard = () => {
                         </div>
                         <div>
                           <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                            <Mail size={16} className="text-green-600" />
-                            Email
-                          </label>
-                          <p className="px-4 py-3 bg-gray-100 rounded-lg text-gray-700">
-                            {user?.email || "Not available"}
-                          </p>
+                          <Mail size={16} className="text-green-600" />
+                          Email
+                        </label>
+                        <p className="px-4 py-3 bg-gray-100 rounded-lg text-gray-700">
+                          {(user as any)?.email || "Not available"}
+                        </p>
                         </div>
                       </div>
                       <div>
@@ -472,7 +475,7 @@ const FacultyDashboard = () => {
                           />
                         ) : (
                           <p className="px-4 py-3 bg-gray-50 rounded-lg">
-                            {profile.bio || "Not set"}
+                            {profile?.bio || "Not set"}
                           </p>
                         )}
                       </div>
@@ -528,8 +531,8 @@ const FacultyDashboard = () => {
                           </div>
                         ) : (
                           <div className="flex flex-wrap gap-2">
-                            {(profile.skills || []).length > 0 ? (
-                              profile.skills.map((skill, index) => (
+                            {(profile?.skills || []).length > 0 ? (
+                              profile?.skills.map((skill, index) => (
                                 <span
                                   key={index}
                                   className="px-4 py-2 bg-gradient-to-r from-green-100 to-blue-100 text-green-700 rounded-lg font-medium"
@@ -733,7 +736,7 @@ const FacultyDashboard = () => {
                         )}
                         <div className="flex items-center gap-2 text-gray-500 text-xs pt-2">
                           <Calendar size={14} />
-                          Posted {new Date(opp.created_at).toLocaleDateString()}
+                          Posted {opp.created_at ? new Date(opp.created_at).toLocaleDateString() : "Recently"}
                         </div>
                       </div>
                       <div className="pt-4 border-t border-gray-100">
@@ -797,7 +800,7 @@ const FacultyDashboard = () => {
                               <p className="text-sm text-gray-600">
                                 Applied for:{" "}
                                 <span className="font-semibold">
-                                  {app.opportunity_title}
+                                  {app.opportunity_title || "N/A"}
                                 </span>
                               </p>
                             </div>
@@ -823,7 +826,7 @@ const FacultyDashboard = () => {
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                               <Calendar size={16} className="text-green-600" />
                               Applied:{" "}
-                              {new Date(app.created_at).toLocaleDateString()}
+                              {app.created_at ? new Date(app.created_at).toLocaleDateString() : (app.applied_date ? new Date(app.applied_date).toLocaleDateString() : "Recently")}
                             </div>
                           </div>
                           {app.student_skills &&

@@ -7,7 +7,10 @@ interface ProtectedRouteProps {
   requiredRole?: string;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRole,
+}) => {
   const { user, role } = React.useContext(AuthContext);
   const navigate = useNavigate();
   useEffect(() => {

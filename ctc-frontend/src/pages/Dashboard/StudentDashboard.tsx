@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
@@ -17,9 +17,6 @@ import {
   FileText,
   CheckCircle,
   Send,
-  Building,
-  Clock,
-  DollarSign,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
@@ -88,7 +85,8 @@ const StudentDashboard = () => {
   const [editedProfile, setEditedProfile] = useState<Partial<Profile>>({});
   const [newSkill, setNewSkill] = useState("");
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
-  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
+  const [selectedOpportunity, setSelectedOpportunity] =
+    useState<Opportunity | null>(null);
   const [applicationForm, setApplicationForm] = useState<ApplicationForm>({
     cover_letter: "",
     resume_base64: "",
@@ -127,7 +125,8 @@ const StudentDashboard = () => {
         setEditedProfile(
           userProfile || {
             user_id: (user as any)?.id,
-            full_name: (user as any)?.full_name || (user as any)?.username || "",
+            full_name:
+              (user as any)?.full_name || (user as any)?.username || "",
             bio: "",
             phone: "",
             location: "",
@@ -166,7 +165,9 @@ const StudentDashboard = () => {
     }
   };
   const removeSkill = (index: number) => {
-    const updatedSkills = (editedProfile.skills || []).filter((_, i) => i !== index);
+    const updatedSkills = (editedProfile.skills || []).filter(
+      (_, i) => i !== index
+    );
     setEditedProfile({ ...editedProfile, skills: updatedSkills });
   };
   const saveProfile = async () => {
@@ -182,8 +183,8 @@ const StudentDashboard = () => {
         // Create new profile
         const newProfile = {
           ...editedProfile,
-          user_id: user?.id,
-          role: user?.role,
+          user_id: (user as any)?.id,
+          role: (user as any)?.role,
         };
         console.log("Creating profile with data:", newProfile);
         response = await api.post("/api/profiles", newProfile);
@@ -206,9 +207,9 @@ const StudentDashboard = () => {
           const profilesRes = await api.get("/api/profiles");
           const existingProfile = profilesRes.data.find(
             (p: any) =>
-              String(p.user_id) === String(user?.id) ||
-              p.user_id?._id === user?.id ||
-              p.user_id === user.id
+              String(p.user_id) === String((user as any)?.id) ||
+              p.user_id?._id === (user as any)?.id ||
+              p.user_id === (user as any)?.id
           );
 
           if (existingProfile) {
@@ -243,7 +244,10 @@ const StudentDashboard = () => {
     });
     setIsApplyModalOpen(true);
   };
-  const handleApplicationInput = (field: keyof ApplicationForm, value: string) => {
+  const handleApplicationInput = (
+    field: keyof ApplicationForm,
+    value: string
+  ) => {
     setApplicationForm({
       ...applicationForm,
       [field]: value,
@@ -255,7 +259,7 @@ const StudentDashboard = () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const result = event.target?.result;
-        if (result && typeof result === 'string') {
+        if (result && typeof result === "string") {
           setApplicationForm({
             ...applicationForm,
             resume_base64: result.split(",")[1],
@@ -300,10 +304,7 @@ const StudentDashboard = () => {
       toast.success(
         "Application submitted! You'll receive an email notification when reviewed."
       );
-      setApplications([
-        ...applications,
-        response.data,
-      ]);
+      setApplications([...applications, response.data]);
       setIsApplyModalOpen(false);
     } catch (error: any) {
       console.error("Submit application error:", error.response?.data || error);
@@ -808,10 +809,10 @@ const StudentDashboard = () => {
                             </td>
                             <td className="px-6 py-4 text-gray-700 font-medium">
                               {" "}
-                              {new Date(app.created_at || app.applied_date).toLocaleDateString()}{" "}
                               {new Date(
-                                app.created_at
+                                app.created_at || app.applied_date
                               ).toLocaleDateString()}{" "}
+                              {new Date(app.created_at).toLocaleDateString()}{" "}
                             </td>
                           </motion.tr>
                         ))
