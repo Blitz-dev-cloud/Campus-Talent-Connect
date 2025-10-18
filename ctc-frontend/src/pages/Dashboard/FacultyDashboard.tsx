@@ -88,7 +88,7 @@ const FacultyDashboard = () => {
     salary: "",
   });
   const [isPosting, setIsPosting] = useState(false);
-  
+
   useEffect(() => {
     fetchData();
   }, [user]);
@@ -151,7 +151,9 @@ const FacultyDashboard = () => {
         return {
           ...app,
           student_name:
-            studentProfile?.full_name || (studentUser as any)?.full_name || "Unknown",
+            studentProfile?.full_name ||
+            (studentUser as any)?.full_name ||
+            "Unknown",
           student_email: (studentUser as any)?.email || "N/A",
           student_phone: studentProfile?.phone || "N/A",
           student_skills: studentProfile?.skills || [],
@@ -450,12 +452,12 @@ const FacultyDashboard = () => {
                         </div>
                         <div>
                           <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                          <Mail size={16} className="text-green-600" />
-                          Email
-                        </label>
-                        <p className="px-4 py-3 bg-gray-100 rounded-lg text-gray-700">
-                          {(user as any)?.email || "Not available"}
-                        </p>
+                            <Mail size={16} className="text-green-600" />
+                            Email
+                          </label>
+                          <p className="px-4 py-3 bg-gray-100 rounded-lg text-gray-700">
+                            {(user as any)?.email || "Not available"}
+                          </p>
                         </div>
                       </div>
                       <div>
@@ -736,7 +738,10 @@ const FacultyDashboard = () => {
                         )}
                         <div className="flex items-center gap-2 text-gray-500 text-xs pt-2">
                           <Calendar size={14} />
-                          Posted {opp.created_at ? new Date(opp.created_at).toLocaleDateString() : "Recently"}
+                          Posted{" "}
+                          {opp.created_at
+                            ? new Date(opp.created_at).toLocaleDateString()
+                            : "Recently"}
                         </div>
                       </div>
                       <div className="pt-4 border-t border-gray-100">
@@ -826,7 +831,13 @@ const FacultyDashboard = () => {
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                               <Calendar size={16} className="text-green-600" />
                               Applied:{" "}
-                              {app.created_at ? new Date(app.created_at).toLocaleDateString() : (app.applied_date ? new Date(app.applied_date).toLocaleDateString() : "Recently")}
+                              {app.created_at
+                                ? new Date(app.created_at).toLocaleDateString()
+                                : app.applied_date
+                                ? new Date(
+                                    app.applied_date
+                                  ).toLocaleDateString()
+                                : "Recently"}
                             </div>
                           </div>
                           {app.student_skills &&
