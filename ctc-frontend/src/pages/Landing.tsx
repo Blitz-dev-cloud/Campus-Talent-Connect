@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -10,10 +10,7 @@ import {
   Building,
   Briefcase,
   Star,
-  TrendingUp,
-  Award,
   Zap,
-  Globe,
 } from "lucide-react";
 import { Footer } from "../components/Footer";
 

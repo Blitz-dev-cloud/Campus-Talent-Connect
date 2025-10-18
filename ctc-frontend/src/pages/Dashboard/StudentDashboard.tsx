@@ -683,7 +683,7 @@ const StudentDashboard = () => {
                 className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
               >
                 {opportunities.length > 0 ? (
-                  opportunities.map((opp, idx) => (
+                  opportunities.map((opp: Opportunity, idx: number) => (
                     <motion.div
                       key={opp.id}
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -780,7 +780,7 @@ const StudentDashboard = () => {
                     </thead>
                     <tbody className="bg-white/80 backdrop-blur-sm">
                       {applications.length > 0 ? (
-                        applications.map((app, idx) => (
+                        applications.map((app: any, idx: number) => (
                           <motion.tr
                             key={app.id}
                             initial={{ opacity: 0, x: -20 }}
@@ -790,7 +790,7 @@ const StudentDashboard = () => {
                           >
                             <td className="px-6 py-4 font-semibold text-gray-800">
                               {" "}
-                              {app.opportunity_title}{" "}
+                              {app.opportunity_title || "N/A"}{" "}
                             </td>
                             <td className="px-6 py-4">
                               <span
@@ -808,6 +808,7 @@ const StudentDashboard = () => {
                             </td>
                             <td className="px-6 py-4 text-gray-700 font-medium">
                               {" "}
+                              {new Date(app.created_at || app.applied_date).toLocaleDateString()}{" "}
                               {new Date(
                                 app.created_at
                               ).toLocaleDateString()}{" "}
