@@ -14,7 +14,12 @@ import { AuthContext } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "./NotificationBell";
 
-const Navbar = ({ isOpen, setIsOpen }) => {
+interface NavbarProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
   const { user, logout, role } = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [showUserMenu, setShowUserMenu] = React.useState(false);

@@ -1,27 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, type JwtPayload } from "jwt-decode";
 import { toast } from "sonner";
 import api from "../lib/api";
 
-export const AuthContext = React.createContext({
+interface User extends JwtPayload {
+  id: string;
+  email: string;
+  role: string;
+  username?: string;
+  full_name?: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  role: string | null;
+  login: (email: string, password: string) => Promise<User>;
+  register: (data: any) => Promise<boolean>;
+  logout: () => void;
+  isLoading: boolean;
+}
+
+export const AuthContext = React.createContext<AuthContextType>({
   user: null,
   role: null,
-  login: async (email, password) => {},
-  register: async (data) => {},
+  login: async (_email: string, _password: string) => ({} as User),
+  register: async (_data: any) => false,
   logout: () => {},
   isLoading: false,
 });
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [role, setRole] = useState(null);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
       try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode<User>(token);
         setUser(decoded);
         setRole(decoded.role || "student");
       } catch {
@@ -30,14 +47,14 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string): Promise<User> => {
     setIsLoading(true);
     try {
       const res = await api.post("/api/auth/login/", { email, password });
       const { access, refresh } = res.data;
       localStorage.setItem("access_token", access);
       localStorage.setItem("refresh_token", refresh);
-      const decoded = jwtDecode(access);
+      const decoded = jwtDecode<User>(access);
       setUser(decoded);
       setRole(decoded.role || "student");
       toast.success("Login successful!");
@@ -50,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (data) => {
+  const register = async (data: any): Promise<boolean> => {
     setIsLoading(true);
     try {
       await api.post("/api/auth/register/", data);

@@ -8,8 +8,6 @@ import {
   Linkedin,
   Facebook,
   Instagram,
-  Github,
-  ArrowRight,
   Award,
   Users,
   Briefcase,
@@ -18,7 +16,6 @@ import {
   Zap,
   Heart,
   TrendingUp,
-  Globe,
   Send,
 } from "lucide-react";
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { MessageCircle, Send, X, Sparkles } from "lucide-react";
 import api from "../lib/api";
 

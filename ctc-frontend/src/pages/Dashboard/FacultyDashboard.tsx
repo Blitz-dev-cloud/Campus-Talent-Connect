@@ -87,8 +87,7 @@ const FacultyDashboard = () => {
     salary: "",
   });
   const [isPosting, setIsPosting] = useState(false);
-  const [selectedApplication, setSelectedApplication] =
-    useState<Application | null>(null);
+  
   useEffect(() => {
     fetchData();
   }, [user]);
@@ -105,21 +104,21 @@ const FacultyDashboard = () => {
           api.get("/api/profiles"),
         ]);
       const userProfile = profRes.data.find(
-        (p: any) =>
-          String(p.user_id) === String(user.id) ||
-          p.user_id?._id === user.id ||
-          p.user_id === user.id
+        (p: Profile) =>
+          String(p.user_id) === String(user?.id) ||
+          (p.user_id as any)?._id === user?.id ||
+          p.user_id === user?.id
       );
       setProfile(userProfile || null);
       setEditedProfile(
         userProfile || {
-          user_id: user.id,
-          full_name: user.full_name || user.username || "",
+          user_id: user?.id || "",
+          full_name: (user as any)?.full_name || (user as any)?.username || "",
           bio: "",
           phone: "",
           location: "",
           skills: [],
-          role: user.role,
+          role: user?.role || "faculty",
         }
       );
 
@@ -127,9 +126,10 @@ const FacultyDashboard = () => {
       console.log("My opportunities:", oppRes.data);
       console.log("All applications:", appRes.data);
       // Get applications for faculty's opportunities
-      const myOpportunityIds = oppRes.data.map((opp: any) => opp.id);
+      const myOpportunityIds = oppRes.data.map((opp: Opportunity) => opp.id);
       console.log("My opportunity IDs:", myOpportunityIds);
-      const myApplications = appRes.data.filter((app: any) => {
+
+      const myApplications = appRes.data.filter((app: Application) => {
         const matches = myOpportunityIds.includes(app.opportunity);
         console.log(
           `Application ${app.id} for opportunity ${app.opportunity}: ${
@@ -140,9 +140,9 @@ const FacultyDashboard = () => {
       });
       console.log("Filtered applications:", myApplications);
       // Enrich applications with student data
-      const enrichedApplications = myApplications.map((app: any) => {
+      const enrichedApplications = myApplications.map((app: Application) => {
         const studentProfile = profilesRes.data.find(
-          (p: any) => p.user_id === app.student_id
+          (p: Profile) => p.user_id === app.student_id
         );
         const studentUser = usersRes.data.find(
           (u: any) => u.id === app.student_id
@@ -150,8 +150,8 @@ const FacultyDashboard = () => {
         return {
           ...app,
           student_name:
-            studentProfile?.full_name || studentUser?.full_name || "Unknown",
-          student_email: studentUser?.email || "N/A",
+            studentProfile?.full_name || (studentUser as any)?.full_name || "Unknown",
+          student_email: (studentUser as any)?.email || "N/A",
           student_phone: studentProfile?.phone || "N/A",
           student_skills: studentProfile?.skills || [],
         };

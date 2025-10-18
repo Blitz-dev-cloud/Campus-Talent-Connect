@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../lib/api";
 import { toast } from "sonner";
 
-export const useFetch = (url: string, method: "GET" | "POST" = "GET") => {
+export const useFetch = (url: string) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

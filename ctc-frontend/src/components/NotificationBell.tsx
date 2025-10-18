@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, X, CheckCircle, AlertCircle, Info } from "lucide-react";
+import { Bell, CheckCircle, AlertCircle, Info } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import api from "../lib/api";
 
