@@ -24,15 +24,56 @@ import {
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
 
+// Type definitions
+interface Profile {
+  _id?: string;
+  user_id: string;
+  full_name: string;
+  bio: string;
+  phone: string;
+  location: string;
+  skills: string[];
+  role: string;
+}
+
+interface Opportunity {
+  id: string;
+  _id?: string;
+  title: string;
+  description: string;
+  type: string;
+  company: string;
+  location: string;
+  salary: string;
+  posted_by: string;
+}
+
+interface Application {
+  id: string;
+  _id?: string;
+  opportunity: string;
+  opportunity_id?: string;
+  student_id: string;
+  status: string;
+  cover_letter: string;
+  resume_base64: string;
+  resume_name: string;
+  applied_date: string;
+  student_name?: string;
+  student_email?: string;
+  student_phone?: string;
+  student_skills?: string[];
+}
+
 const FacultyDashboard = () => {
   const { user } = React.useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("profile");
-  const [profile, setProfile] = useState(null);
-  const [opportunities, setOpportunities] = useState([]);
-  const [applications, setApplications] = useState([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProfile, setEditedProfile] = useState({});
+  const [editedProfile, setEditedProfile] = useState<Partial<Profile>>({});
   const [newSkill, setNewSkill] = useState("");
   const [formData, setFormData] = useState({
     title: "",
@@ -43,7 +84,8 @@ const FacultyDashboard = () => {
     salary: "",
   });
   const [isPosting, setIsPosting] = useState(false);
-  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [selectedApplication, setSelectedApplication] =
+    useState<Application | null>(null);
   useEffect(() => {
     fetchData();
   }, [user]);
@@ -60,7 +102,7 @@ const FacultyDashboard = () => {
           api.get("/api/profiles"),
         ]);
       const userProfile = profRes.data.find(
-        (p) =>
+        (p: any) =>
           String(p.user_id) === String(user.id) ||
           p.user_id?._id === user.id ||
           p.user_id === user.id
@@ -82,9 +124,9 @@ const FacultyDashboard = () => {
       console.log("My opportunities:", oppRes.data);
       console.log("All applications:", appRes.data);
       // Get applications for faculty's opportunities
-      const myOpportunityIds = oppRes.data.map((opp) => opp.id);
+      const myOpportunityIds = oppRes.data.map((opp: any) => opp.id);
       console.log("My opportunity IDs:", myOpportunityIds);
-      const myApplications = appRes.data.filter((app) => {
+      const myApplications = appRes.data.filter((app: any) => {
         const matches = myOpportunityIds.includes(app.opportunity);
         console.log(
           `Application ${app.id} for opportunity ${app.opportunity}: ${
@@ -95,11 +137,13 @@ const FacultyDashboard = () => {
       });
       console.log("Filtered applications:", myApplications);
       // Enrich applications with student data
-      const enrichedApplications = myApplications.map((app) => {
+      const enrichedApplications = myApplications.map((app: any) => {
         const studentProfile = profilesRes.data.find(
-          (p) => p.user_id === app.student_id
+          (p: any) => p.user_id === app.student_id
         );
-        const studentUser = usersRes.data.find((u) => u.id === app.student_id);
+        const studentUser = usersRes.data.find(
+          (u: any) => u.id === app.student_id
+        );
         return {
           ...app,
           student_name:
@@ -118,7 +162,10 @@ const FacultyDashboard = () => {
       setIsLoading(false);
     }
   };
-  const handleApplicationAction = async (applicationId, newStatus) => {
+  const handleApplicationAction = async (
+    applicationId: string,
+    newStatus: string
+  ) => {
     try {
       await api.patch(`/api/applications/${applicationId}`, {
         status: newStatus,
@@ -139,7 +186,7 @@ const FacultyDashboard = () => {
       toast.error("Failed to update application");
     }
   };
-  const viewResume = (resume_base64, resume_name) => {
+  const viewResume = (resume_base64: string, resume_name: string) => {
     const pdfWindow = window.open("");
     if (pdfWindow) {
       pdfWindow.document.write(
@@ -149,11 +196,11 @@ const FacultyDashboard = () => {
   };
   const handleEditToggle = () => {
     if (isEditing) {
-      setEditedProfile(profile);
+      setEditedProfile(profile || {});
     }
     setIsEditing(!isEditing);
   };
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: string) => {
     setEditedProfile({ ...editedProfile, [field]: value });
   };
   const addSkill = () => {
@@ -166,8 +213,10 @@ const FacultyDashboard = () => {
       setNewSkill("");
     }
   };
-  const removeSkill = (index) => {
-    const updatedSkills = editedProfile.skills.filter((_, i) => i !== index);
+  const removeSkill = (index: number) => {
+    const updatedSkills = (editedProfile.skills || []).filter(
+      (_, i) => i !== index
+    );
     setEditedProfile({ ...editedProfile, skills: updatedSkills });
   };
   const saveProfile = async () => {
