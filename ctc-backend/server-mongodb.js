@@ -18,7 +18,17 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173', 
+    'http://localhost:3000',
+    'https://campus-talent-connect-6jzx.vercel.app',
+    'https://campus-talent-connect.vercel.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: "50mb" })); // Increased limit for base64 resumes
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
