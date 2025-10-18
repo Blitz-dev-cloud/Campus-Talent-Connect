@@ -23,19 +23,73 @@ import {
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
+
+// Type definitions
+interface Profile {
+  _id?: string;
+  user_id: string;
+  full_name: string;
+  bio: string;
+  phone: string;
+  location: string;
+  skills: string[];
+  cgpa?: string;
+  tenth_percentage?: string;
+  twelfth_percentage?: string;
+  role: string;
+}
+
+interface Opportunity {
+  _id?: string;
+  id: string;
+  title: string;
+  company: string;
+  description: string;
+  requirements: string[];
+  type: string;
+  location: string;
+  salary?: string;
+  posted_by: string;
+  status: string;
+}
+
+interface Application {
+  _id?: string;
+  id: string;
+  opportunity_id: string;
+  user_id: string;
+  status: string;
+  cover_letter: string;
+  resume_base64: string;
+  resume_name: string;
+  cgpa: string;
+  tenth_percentage: string;
+  twelfth_percentage: string;
+  applied_date: string;
+}
+
+interface ApplicationForm {
+  cover_letter: string;
+  resume_base64: string;
+  resume_name: string;
+  cgpa: string;
+  tenth_percentage: string;
+  twelfth_percentage: string;
+}
+
 const StudentDashboard = () => {
   const { user } = React.useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("profile");
-  const [profile, setProfile] = useState(null);
-  const [opportunities, setOpportunities] = useState([]);
-  const [applications, setApplications] = useState([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProfile, setEditedProfile] = useState({});
+  const [editedProfile, setEditedProfile] = useState<Partial<Profile>>({});
   const [newSkill, setNewSkill] = useState("");
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
-  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
-  const [applicationForm, setApplicationForm] = useState({
+  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
+  const [applicationForm, setApplicationForm] = useState<ApplicationForm>({
     cover_letter: "",
     resume_base64: "",
     resume_name: "",
@@ -56,29 +110,29 @@ const StudentDashboard = () => {
           api.get("/api/applications"),
         ]);
 
-        console.log("User ID:", user.id);
+        console.log("User ID:", (user as any)?.id);
         console.log("All profiles:", profRes.data);
 
         // Find the profile for the current logged-in user by user_id
         // Convert both to string for comparison since MongoDB returns ObjectId
         const userProfile = profRes.data.find(
-          (p) =>
-            String(p.user_id) === String(user.id) ||
-            p.user_id?._id === user.id ||
-            p.user_id === user.id
+          (p: any) =>
+            String(p.user_id) === String((user as any)?.id) ||
+            p.user_id?._id === (user as any)?.id ||
+            p.user_id === (user as any)?.id
         );
         console.log("Found user profile:", userProfile);
 
         setProfile(userProfile || null);
         setEditedProfile(
           userProfile || {
-            user_id: user.id,
-            full_name: user.full_name || user.username || "",
+            user_id: (user as any)?.id,
+            full_name: (user as any)?.full_name || (user as any)?.username || "",
             bio: "",
             phone: "",
             location: "",
             skills: [],
-            role: user.role,
+            role: (user as any)?.role,
           }
         );
         setOpportunities(oppRes.data);
@@ -98,7 +152,7 @@ const StudentDashboard = () => {
     }
     setIsEditing(!isEditing);
   };
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: string) => {
     setEditedProfile({ ...editedProfile, [field]: value });
   };
   const addSkill = () => {
@@ -111,14 +165,14 @@ const StudentDashboard = () => {
       setNewSkill("");
     }
   };
-  const removeSkill = (index) => {
-    const updatedSkills = editedProfile.skills.filter((_, i) => i !== index);
+  const removeSkill = (index: number) => {
+    const updatedSkills = (editedProfile.skills || []).filter((_, i) => i !== index);
     setEditedProfile({ ...editedProfile, skills: updatedSkills });
   };
   const saveProfile = async () => {
     try {
       let response;
-      const profileId = profile?._id || profile?.id;
+      const profileId = profile?._id;
 
       if (profileId) {
         // Update existing profile
@@ -128,8 +182,8 @@ const StudentDashboard = () => {
         // Create new profile
         const newProfile = {
           ...editedProfile,
-          user_id: user.id,
-          role: user.role,
+          user_id: user?.id,
+          role: user?.role,
         };
         console.log("Creating profile with data:", newProfile);
         response = await api.post("/api/profiles", newProfile);
@@ -138,7 +192,7 @@ const StudentDashboard = () => {
       setEditedProfile(response.data);
       setIsEditing(false);
       toast.success("Profile saved successfully!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Save profile error:", error);
       console.error("Error response:", error.response?.data);
 
@@ -151,9 +205,9 @@ const StudentDashboard = () => {
           // Fetch all profiles and find the user's profile
           const profilesRes = await api.get("/api/profiles");
           const existingProfile = profilesRes.data.find(
-            (p) =>
-              String(p.user_id) === String(user.id) ||
-              p.user_id?._id === user.id ||
+            (p: any) =>
+              String(p.user_id) === String(user?.id) ||
+              p.user_id?._id === user?.id ||
               p.user_id === user.id
           );
 
@@ -177,31 +231,37 @@ const StudentDashboard = () => {
       toast.error(error.response?.data?.message || "Failed to save profile");
     }
   };
-  const openApplyModal = (opp) => {
+  const openApplyModal = (opp: Opportunity) => {
     setSelectedOpportunity(opp);
     setApplicationForm({
       cover_letter: "",
       resume_base64: "",
       resume_name: "",
+      cgpa: "",
+      tenth_percentage: "",
+      twelfth_percentage: "",
     });
     setIsApplyModalOpen(true);
   };
-  const handleApplicationInput = (field, value) => {
+  const handleApplicationInput = (field: keyof ApplicationForm, value: string) => {
     setApplicationForm({
       ...applicationForm,
       [field]: value,
     });
   };
-  const handleResumeChange = (e) => {
-    const file = e.target.files[0];
+  const handleResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file && file.type === "application/pdf") {
       const reader = new FileReader();
       reader.onload = (event) => {
-        setApplicationForm({
-          ...applicationForm,
-          resume_base64: event.target.result.split(",")[1],
-          resume_name: file.name,
-        });
+        const result = event.target?.result;
+        if (result && typeof result === 'string') {
+          setApplicationForm({
+            ...applicationForm,
+            resume_base64: result.split(",")[1],
+            resume_name: file.name,
+          });
+        }
       };
       reader.readAsDataURL(file);
     } else {
@@ -242,13 +302,10 @@ const StudentDashboard = () => {
       );
       setApplications([
         ...applications,
-        {
-          ...response.data,
-          opportunity_title: selectedOpportunity.title,
-        },
+        response.data,
       ]);
       setIsApplyModalOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Submit application error:", error.response?.data || error);
       toast.error(
         `Failed to submit application: ${
@@ -283,7 +340,7 @@ const StudentDashboard = () => {
           transition={{ delay: 0.1 }}
           className="flex gap-3 mb-8 bg-white/80 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-white/20"
         >
-          {["profile", "opportunities", "applications"].map((tab, index) => (
+          {["profile", "opportunities", "applications"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -328,16 +385,16 @@ const StudentDashboard = () => {
                         <h2 className="text-3xl font-bold drop-shadow-lg">
                           {" "}
                           {profile?.full_name ||
-                            user?.full_name ||
-                            user?.username ||
+                            (user as any)?.full_name ||
+                            (user as any)?.username ||
                             "Your Name"}{" "}
                         </h2>
                         <p className="text-white/90 text-lg mt-1">
-                          {user?.email}
+                          {(user as any)?.email}
                         </p>
                         <p className="text-white/70 text-sm capitalize mt-1 bg-white/20 inline-block px-3 py-1 rounded-full">
                           {" "}
-                          {user?.role || "Student"}{" "}
+                          {(user as any)?.role || "Student"}{" "}
                         </p>
                       </div>
                     </div>
@@ -363,7 +420,7 @@ const StudentDashboard = () => {
                 </div>
                 {/* Profile Content */}
                 <div className="p-8 bg-white/60 backdrop-blur-sm">
-                  {profile?._id || profile?.id || isEditing ? (
+                  {profile?._id || isEditing ? (
                     <div className="space-y-6">
                       {/* Basic Info */}
                       <div className="grid md:grid-cols-2 gap-6">
@@ -469,7 +526,7 @@ const StudentDashboard = () => {
                           </label>
                           <p className="px-4 py-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl text-gray-700 border border-gray-300">
                             {" "}
-                            {user?.email || "Not available"}{" "}
+                            {(user as any)?.email || "Not available"}{" "}
                           </p>
                           <p className="text-xs text-gray-500 mt-2">
                             {" "}
