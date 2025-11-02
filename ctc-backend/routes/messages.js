@@ -31,7 +31,28 @@ router.get("/:applicationId", auth, async (req, res) => {
       .populate("receiver_id", "full_name email role")
       .sort({ created_at: 1 });
 
-    res.json(messages);
+    // Manually fetch profile pictures for sender and receiver
+    const Profile = require("../models/Profile");
+    const messagesWithProfiles = await Promise.all(
+      messages.map(async (msg) => {
+        const senderProfile = await Profile.findOne({ user_id: msg.sender_id._id });
+        const receiverProfile = await Profile.findOne({ user_id: msg.receiver_id._id });
+        
+        return {
+          ...msg.toObject(),
+          sender_id: {
+            ...msg.sender_id.toObject(),
+            profile_picture: senderProfile?.profile_picture || null,
+          },
+          receiver_id: {
+            ...msg.receiver_id.toObject(),
+            profile_picture: receiverProfile?.profile_picture || null,
+          },
+        };
+      })
+    );
+
+    res.json(messagesWithProfiles);
   } catch (err) {
     console.error("Get messages error:", err);
     res.status(500).json({ message: err.message });

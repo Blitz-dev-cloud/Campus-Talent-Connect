@@ -130,6 +130,7 @@ const StudentDashboard = () => {
     facultyId: string;
     facultyName: string;
     opportunityTitle: string;
+    facultyProfilePicture?: string;
   } | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -312,10 +313,11 @@ const StudentDashboard = () => {
     setIsApplyModalOpen(true);
   };
 
-  const openChat = (app: Application, opp: Opportunity) => {
+  const openChat = async (app: Application, opp: Opportunity) => {
     // Handle posted_by - it could be a string (ID) or populated object
     let facultyId = "";
     let facultyName = "Faculty/Alumni";
+    let facultyProfilePicture = "";
 
     console.log("openChat received opp.posted_by:", opp.posted_by);
     console.log("Type of posted_by:", typeof opp.posted_by);
@@ -329,11 +331,22 @@ const StudentDashboard = () => {
       console.log("posted_by is object:", { facultyId, facultyName });
     }
 
+    // Fetch faculty profile picture
+    try {
+      const profileRes = await api.get(`/api/profiles/user/${facultyId}`);
+      if (profileRes.data?.profile_picture) {
+        facultyProfilePicture = profileRes.data.profile_picture;
+      }
+    } catch (error) {
+      console.log("Could not fetch faculty profile picture");
+    }
+
     console.log("Opening chat with:", {
       applicationId: app._id || app.id,
       facultyId,
       facultyName,
       opportunityTitle: opp.title,
+      facultyProfilePicture,
       opportunityObject: opp,
     });
 
@@ -342,6 +355,7 @@ const StudentDashboard = () => {
       facultyId: facultyId,
       facultyName: facultyName,
       opportunityTitle: opp.title,
+      facultyProfilePicture: facultyProfilePicture,
     });
     setChatOpen(true);
   };
@@ -1233,6 +1247,7 @@ const StudentDashboard = () => {
           receiverId={selectedChat.facultyId}
           receiverName={selectedChat.facultyName}
           opportunityTitle={selectedChat.opportunityTitle}
+          receiverProfilePicture={selectedChat.facultyProfilePicture}
           onClose={closeChat}
         />
       )}

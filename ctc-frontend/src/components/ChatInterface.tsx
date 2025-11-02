@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, MessageCircle } from "lucide-react";
+import { X, Send, MessageCircle, User } from "lucide-react";
 import { toast } from "sonner";
 import api from "../lib/api";
 import { AuthContext } from "../context/AuthContext";
@@ -13,12 +13,14 @@ interface Message {
     full_name: string;
     email: string;
     role: string;
+    profile_picture?: string;
   };
   receiver_id: {
     _id: string;
     full_name: string;
     email: string;
     role: string;
+    profile_picture?: string;
   };
   message: string;
   read: boolean;
@@ -30,6 +32,7 @@ interface ChatInterfaceProps {
   receiverId: string;
   receiverName: string;
   opportunityTitle: string;
+  receiverProfilePicture?: string;
   onClose: () => void;
 }
 
@@ -38,6 +41,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   receiverId,
   receiverName,
   opportunityTitle,
+  receiverProfilePicture,
   onClose,
 }) => {
   const { user } = useContext(AuthContext);
@@ -150,7 +154,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <MessageCircle className="w-6 h-6" />
+              {/* Receiver Profile Picture */}
+              {receiverProfilePicture ? (
+                <img
+                  src={receiverProfilePicture}
+                  alt={receiverName}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-white/50"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center border-2 border-white/50">
+                  <User size={20} className="text-white" />
+                </div>
+              )}
               <div>
                 <h3 className="font-semibold text-lg">{receiverName}</h3>
                 <p className="text-sm opacity-90">{opportunityTitle}</p>
@@ -179,15 +194,33 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           ) : (
             messages.map((msg) => {
               const isSender = msg.sender_id._id === user?.id;
+              
               return (
                 <motion.div
                   key={msg._id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${
+                  className={`flex gap-2 ${
                     isSender ? "justify-end" : "justify-start"
                   }`}
                 >
+                  {/* Profile Picture - show on left for received messages */}
+                  {!isSender && (
+                    <div className="flex-shrink-0">
+                      {msg.sender_id.profile_picture ? (
+                        <img
+                          src={msg.sender_id.profile_picture}
+                          alt={msg.sender_id.full_name}
+                          className="w-8 h-8 rounded-full object-cover border-2 border-purple-200"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center border-2 border-purple-200">
+                          <User size={16} className="text-white" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
                   <div
                     className={`max-w-[70%] rounded-2xl px-4 py-2 ${
                       isSender
@@ -204,6 +237,23 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                       {formatTime(msg.created_at)}
                     </p>
                   </div>
+                  
+                  {/* Profile Picture - show on right for sent messages */}
+                  {isSender && (
+                    <div className="flex-shrink-0">
+                      {msg.sender_id.profile_picture ? (
+                        <img
+                          src={msg.sender_id.profile_picture}
+                          alt={msg.sender_id.full_name}
+                          className="w-8 h-8 rounded-full object-cover border-2 border-purple-200"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center border-2 border-purple-200">
+                          <User size={16} className="text-white" />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </motion.div>
               );
             })

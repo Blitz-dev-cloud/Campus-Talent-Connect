@@ -99,6 +99,7 @@ const FacultyDashboard = () => {
     studentId: string;
     studentName: string;
     opportunityTitle: string;
+    studentProfilePicture?: string;
   } | null>(null);
 
   useEffect(() => {
@@ -214,12 +215,24 @@ const FacultyDashboard = () => {
     }
   };
 
-  const openChat = (app: Application) => {
+  const openChat = async (app: Application) => {
+    // Fetch student profile picture
+    let studentProfilePicture = "";
+    try {
+      const profileRes = await api.get(`/api/profiles/user/${app.student_id}`);
+      if (profileRes.data?.profile_picture) {
+        studentProfilePicture = profileRes.data.profile_picture;
+      }
+    } catch (error) {
+      console.log("Could not fetch student profile picture");
+    }
+
     setSelectedChat({
       applicationId: app._id || app.id,
       studentId: app.student_id,
       studentName: app.student_name || "Student",
       opportunityTitle: app.opportunity_title || "Opportunity",
+      studentProfilePicture: studentProfilePicture,
     });
     setChatOpen(true);
   };
@@ -1094,6 +1107,7 @@ const FacultyDashboard = () => {
           receiverId={selectedChat.studentId}
           receiverName={selectedChat.studentName}
           opportunityTitle={selectedChat.opportunityTitle}
+          receiverProfilePicture={selectedChat.studentProfilePicture}
           onClose={closeChat}
         />
       )}
