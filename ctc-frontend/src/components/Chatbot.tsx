@@ -19,6 +19,46 @@ interface Opportunity {
   salary?: string | number;
 }
 
+// Simple formatter to convert markdown-like text to formatted output
+const formatBotMessage = (text: string): React.ReactElement => {
+  const lines = text.split('\n');
+  
+  return (
+    <div className="space-y-2">
+      {lines.map((line, index) => {
+        // Bold text **text**
+        let formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
+        
+        // Italic text *text*
+        formattedLine = formattedLine.replace(/\*(.*?)\*/g, '<em class="italic text-gray-600">$1</em>');
+        
+        // Bullet points
+        if (line.trim().startsWith('•') || line.trim().startsWith('-')) {
+          return (
+            <div key={index} className="flex gap-2 ml-2">
+              <span className="text-blue-600">•</span>
+              <span dangerouslySetInnerHTML={{ __html: formattedLine.replace(/^[•-]\s*/, '') }} />
+            </div>
+          );
+        }
+        
+        // Emoji lines (keep as is) - check for common emojis
+        if (line.trim().match(/^[\u{1F4CB}\u{1F3E2}\u{1F4CD}\u{1F4BC}\u{1F4B0}\u{1F4A1}\u{1F393}\u{2728}\u{1F465}\u{1F4DD}]/u)) {
+          return <div key={index} dangerouslySetInnerHTML={{ __html: formattedLine }} />;
+        }
+        
+        // Regular lines
+        if (line.trim()) {
+          return <div key={index} dangerouslySetInnerHTML={{ __html: formattedLine }} />;
+        }
+        
+        // Empty lines (spacing)
+        return <div key={index} className="h-1" />;
+      })}
+    </div>
+  );
+};
+
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -106,14 +146,16 @@ const Chatbot = () => {
     const formatted = opportunities
       .map((opp, index) => {
         const salary =
-          opp.salary && opp.salary !== "" ? `$${opp.salary}` : "Not specified";
-        return `${index + 1}. ${opp.title} at ${opp.company}\n   Type: ${
-          opp.type
-        } | Location: ${opp.location} | Salary: ${salary}`;
+          opp.salary && opp.salary !== "" ? `💰 $${opp.salary}` : "💰 Not specified";
+        return `**${index + 1}. ${opp.title}**
+   🏢 Company: ${opp.company}
+   📍 Location: ${opp.location}
+   💼 Type: ${opp.type}
+   ${salary}`;
       })
       .join("\n\n");
 
-    return `I found ${opportunities.length} available opportunities:\n\n${formatted}\n\nWould you like more details about any of these?`;
+    return `📋 **Available Opportunities** (${opportunities.length} total):\n\n${formatted}\n\n💡 *Tip: Click on any opportunity in the Opportunities tab to apply!*`;
   };
 
   const sendMessage = async () => {
@@ -137,7 +179,28 @@ const Chatbot = () => {
         return;
       }
 
-      let systemPrompt = `You are a friendly assistant for Campus Talent Connect. You have context of the ongoing conversation. Answer naturally and conversationally without bullet points, asterisks, or markdown formatting. Keep responses under 100 words. Be helpful and remember previous context from the conversation.`;
+      let systemPrompt = `You are a friendly and professional assistant for Campus Talent Connect, a platform connecting students with opportunities.
+
+**Your responsibilities:**
+- Help students find internships, research positions, and job opportunities
+- Provide information about the platform features
+- Answer questions about applications, profiles, and opportunities
+- Be conversational but professional
+
+**Response formatting guidelines:**
+- Use clear paragraphs for better readability
+- Use bullet points (•) for lists when appropriate
+- Use **bold** for important terms or titles
+- Use line breaks to separate different topics
+- Keep responses concise but informative (under 150 words unless listing opportunities)
+- When listing opportunities, use a structured format with clear sections
+
+**Context awareness:**
+- Remember the conversation history
+- Reference previous messages when relevant
+- Provide contextual follow-up suggestions
+
+Be helpful, friendly, and guide users to make the most of Campus Talent Connect!`;
 
       let enrichedContent = input;
 
@@ -296,13 +359,17 @@ const Chatbot = () => {
                 } animate-in fade-in slide-in-from-bottom-2 duration-300`}
               >
                 <div
-                  className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm shadow-sm whitespace-pre-wrap ${
+                  className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm shadow-sm ${
                     msg.role === "user"
-                      ? "bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-br-md"
+                      ? "bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-br-md whitespace-pre-wrap"
                       : "bg-white text-gray-800 rounded-bl-md border border-gray-100"
                   }`}
                 >
-                  {msg.content}
+                  {msg.role === "user" ? (
+                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                  ) : (
+                    formatBotMessage(msg.content)
+                  )}
                 </div>
               </div>
             ))}
