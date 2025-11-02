@@ -93,12 +93,13 @@ const AlumniDashboard = () => {
       console.log("My opportunities:", oppRes.data);
       console.log("All applications:", appRes.data);
       // Get applications for alumni's opportunities
-      const myOpportunityIds = oppRes.data.map((opp) => opp.id);
+      const myOpportunityIds = oppRes.data.map((opp) => opp._id || opp.id);
       console.log("My opportunity IDs:", myOpportunityIds);
       const myApplications = appRes.data.filter((app) => {
-        const matches = myOpportunityIds.includes(app.opportunity);
+        const appOppId = (app.opportunity as any)?._id || app.opportunity_id || app.opportunity;
+        const matches = myOpportunityIds.includes(appOppId);
         console.log(
-          `Application ${app.id} for opportunity ${app.opportunity}: ${
+          `Application ${app._id || app.id} for opportunity ${appOppId}: ${
             matches ? "MATCH" : "no match"
           }`
         );
@@ -137,7 +138,7 @@ const AlumniDashboard = () => {
 
       setApplications(
         applications.map((app) =>
-          app.id === applicationId ? { ...app, status: newStatus } : app
+          (app._id || app.id) === applicationId ? { ...app, status: newStatus } : app
         )
       );
 
@@ -881,7 +882,7 @@ const AlumniDashboard = () => {
                             <div className="flex gap-3 pt-4 border-t border-gray-200">
                               <button
                                 onClick={() =>
-                                  handleApplicationAction(app.id, "accepted")
+                                  handleApplicationAction(app._id || app.id, "accepted")
                                 }
                                 className="flex-1 bg-green-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-green-700 transition-all flex items-center justify-center gap-2"
                               >
@@ -890,7 +891,7 @@ const AlumniDashboard = () => {
                               </button>
                               <button
                                 onClick={() =>
-                                  handleApplicationAction(app.id, "rejected")
+                                  handleApplicationAction(app._id || app.id, "rejected")
                                 }
                                 className="flex-1 bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition-all flex items-center justify-center gap-2"
                               >
