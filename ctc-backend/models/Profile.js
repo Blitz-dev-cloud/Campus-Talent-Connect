@@ -8,6 +8,7 @@ const ProfileSchema = new mongoose.Schema({
   location: { type: String },
   skills: { type: [String] },
   role: { type: String },
+  profile_picture: { type: String }, // URL or base64 string
 });
 
 module.exports = mongoose.model("Profile", ProfileSchema);

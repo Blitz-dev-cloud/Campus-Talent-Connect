@@ -21,6 +21,8 @@ import {
   Users,
   FileText,
   MessageCircle,
+  Camera,
+  X,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
@@ -36,6 +38,7 @@ interface Profile {
   location: string;
   skills: string[];
   role: string;
+  profile_picture?: string;
 }
 
 const AlumniDashboard = () => {
@@ -214,6 +217,33 @@ const AlumniDashboard = () => {
     const updatedSkills = editedProfile.skills.filter((_, i) => i !== index);
     setEditedProfile({ ...editedProfile, skills: updatedSkills });
   };
+
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image size should be less than 2MB");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setEditedProfile({ ...editedProfile, profile_picture: base64String });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeProfilePicture = () => {
+    setEditedProfile({ ...editedProfile, profile_picture: "" });
+  };
+
   const saveProfile = async () => {
     try {
       let response;
@@ -378,9 +408,49 @@ const AlumniDashboard = () => {
                 <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 text-white relative">
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-4">
-                      <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-4 border-white/30">
-                        <User size={40} className="text-white" />
+                      {/* Profile Picture */}
+                      <div className="relative group">
+                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white/30 bg-white/20 backdrop-blur-sm">
+                          {editedProfile.profile_picture || profile?.profile_picture ? (
+                            <img
+                              src={editedProfile.profile_picture || profile?.profile_picture}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <User size={40} className="text-white" />
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Upload/Remove buttons - only show when editing */}
+                        {isEditing && (
+                          <div className="absolute -bottom-1 -right-1 flex gap-1">
+                            <label className="cursor-pointer">
+                              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors">
+                                <Camera size={16} className="text-white" />
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleProfilePictureChange}
+                                  className="hidden"
+                                />
+                              </div>
+                            </label>
+                            
+                            {(editedProfile.profile_picture || profile?.profile_picture) && (
+                              <button
+                                onClick={removeProfilePicture}
+                                className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+                              >
+                                <X size={16} className="text-white" />
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
+                      
                       <div>
                         <h2 className="text-3xl font-bold">
                           {profile?.full_name ||

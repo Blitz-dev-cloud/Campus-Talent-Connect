@@ -18,6 +18,8 @@ import {
   CheckCircle,
   Send,
   MessageCircle,
+  Camera,
+  Upload,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
@@ -36,6 +38,7 @@ interface Profile {
   tenth_percentage?: string;
   twelfth_percentage?: string;
   role: string;
+  profile_picture?: string;
 }
 
 interface Opportunity {
@@ -207,6 +210,35 @@ const StudentDashboard = () => {
     );
     setEditedProfile({ ...editedProfile, skills: updatedSkills });
   };
+
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image size should be less than 2MB");
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setEditedProfile({ ...editedProfile, profile_picture: base64String });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeProfilePicture = () => {
+    setEditedProfile({ ...editedProfile, profile_picture: "" });
+  };
+
   const saveProfile = async () => {
     try {
       let response;
@@ -457,12 +489,58 @@ const StudentDashboard = () => {
 
                   <div className="flex justify-between items-start relative z-10">
                     <div className="flex items-center gap-6">
-                      <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border-4 border-white/30 shadow-2xl"
-                      >
-                        <User size={48} className="text-white drop-shadow-lg" />
-                      </motion.div>
+                      {/* Profile Picture */}
+                      <div className="relative group">
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/30 shadow-2xl bg-white/20 backdrop-blur-md"
+                        >
+                          {editedProfile.profile_picture || profile?.profile_picture ? (
+                            <img
+                              src={editedProfile.profile_picture || profile?.profile_picture}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <User size={48} className="text-white drop-shadow-lg" />
+                            </div>
+                          )}
+                        </motion.div>
+                        
+                        {/* Upload/Remove buttons - only show when editing */}
+                        {isEditing && (
+                          <div className="absolute -bottom-2 -right-2 flex gap-2">
+                            <label className="cursor-pointer">
+                              <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
+                              >
+                                <Camera size={20} className="text-white" />
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleProfilePictureChange}
+                                  className="hidden"
+                                />
+                              </motion.div>
+                            </label>
+                            
+                            {(editedProfile.profile_picture || profile?.profile_picture) && (
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={removeProfilePicture}
+                                className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+                              >
+                                <X size={20} className="text-white" />
+                              </motion.button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      
                       <div>
                         <h2 className="text-4xl font-black drop-shadow-lg mb-2">
                           {profile?.full_name ||
