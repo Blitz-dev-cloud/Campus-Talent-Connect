@@ -10,9 +10,9 @@ router.get("/", async (req, res) => {
       "user_id",
       "email full_name role"
     );
-    
+
     // Transform to include user_id as string for easier matching
-    const transformedProfiles = profiles.map(profile => {
+    const transformedProfiles = profiles.map((profile) => {
       const profileObj = profile.toObject();
       // Keep the populated user_id but also add a user_id_string field
       if (profileObj.user_id && profileObj.user_id._id) {
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
       }
       return profileObj;
     });
-    
+
     res.json(transformedProfiles);
   } catch (err) {
     res.status(500).json({ message: err.message });

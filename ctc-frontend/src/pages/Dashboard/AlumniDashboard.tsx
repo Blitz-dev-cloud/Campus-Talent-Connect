@@ -127,21 +127,45 @@ const AlumniDashboard = () => {
       console.log("Filtered applications:", myApplications);
       // Enrich applications with student data
       const enrichedApplications = myApplications.map((app) => {
+        // student_id is already populated by the backend with full_name and email
+        const populatedStudent = (app as any).student_id;
+
+        // Also try to find profile for additional info (phone, skills)
         const studentProfile = profilesRes.data.find((p) => {
-          // Use user_id_string if available, otherwise extract from user_id object
-          const profileUserId = (p as any).user_id_string || 
-            (typeof p.user_id === "string" ? p.user_id : 
-            (p.user_id as any)?._id?.toString() || (p.user_id as any)?.toString());
-          return profileUserId === app.student_id.toString();
+          const profileUserId =
+            (p as any).user_id_string ||
+            (typeof p.user_id === "string"
+              ? p.user_id
+              : (p.user_id as any)?._id?.toString() ||
+                (p.user_id as any)?.toString());
+
+          const studentIdStr =
+            typeof populatedStudent === "object"
+              ? populatedStudent._id?.toString() || populatedStudent.toString()
+              : app.student_id?.toString();
+
+          return profileUserId === studentIdStr;
         });
-        const studentUser = usersRes.data.find(
-          (u) => u.id?.toString() === app.student_id?.toString()
-        );
+
+        const studentUser = usersRes.data.find((u) => {
+          const studentIdStr =
+            typeof populatedStudent === "object"
+              ? populatedStudent._id?.toString() || populatedStudent.toString()
+              : app.student_id?.toString();
+          return u.id?.toString() === studentIdStr;
+        });
+
+        // Priority: populated student_id.full_name > profile.full_name > user.full_name
+        const finalName =
+          populatedStudent?.full_name ||
+          studentProfile?.full_name ||
+          studentUser?.full_name ||
+          "Unknown";
+
         return {
           ...app,
-          student_name:
-            studentProfile?.full_name || studentUser?.full_name || "Unknown",
-          student_email: studentUser?.email || "N/A",
+          student_name: finalName,
+          student_email: populatedStudent?.email || studentUser?.email || "N/A",
           student_phone: studentProfile?.phone || "N/A",
           student_skills: studentProfile?.skills || [],
         };
@@ -179,10 +203,17 @@ const AlumniDashboard = () => {
   };
 
   const openChat = async (app) => {
+    // Extract the actual student ID (it might be populated as an object)
+    const populatedStudent = (app as any).student_id;
+    const actualStudentId =
+      typeof populatedStudent === "object"
+        ? populatedStudent._id || populatedStudent.id
+        : app.student_id;
+
     // Fetch student profile picture
     let studentProfilePicture = "";
     try {
-      const profileRes = await api.get(`/api/profiles/user/${app.student_id}`);
+      const profileRes = await api.get(`/api/profiles/user/${actualStudentId}`);
       if (profileRes.data?.profile_picture) {
         studentProfilePicture = profileRes.data.profile_picture;
       }
@@ -192,7 +223,7 @@ const AlumniDashboard = () => {
 
     setSelectedChat({
       applicationId: app._id || app.id,
-      studentId: app.student_id,
+      studentId: actualStudentId,
       studentName: app.student_name || "Student",
       opportunityTitle: app.opportunity_title || "Opportunity",
       studentProfilePicture: studentProfilePicture,
@@ -414,9 +445,11 @@ const AlumniDashboard = () => {
           ))}
         </div>
         {isLoading ? (
-          <div className="text-center py-12">
-            <div className="inline-block w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-gray-600">Loading your dashboard...</p>
+          <div className="text-center py-32">
+            <div className="inline-block w-20 h-20 border-[6px] border-purple-200 border-t-purple-600 rounded-full animate-spin shadow-lg"></div>
+            <p className="mt-8 text-gray-600 text-xl font-semibold animate-pulse">
+              Loading your dashboard...
+            </p>
           </div>
         ) : (
           <>

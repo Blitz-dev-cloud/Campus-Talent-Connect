@@ -171,41 +171,65 @@ const FacultyDashboard = () => {
       // Enrich applications with student data
       const enrichedApplications = myApplications.map((app: Application) => {
         console.log("=== Processing application ===");
-        console.log("app.student_id:", app.student_id, "Type:", typeof app.student_id);
-        
+        console.log("Application:", app);
+        console.log("app.student_id (populated):", (app as any).student_id);
+
+        // student_id is already populated by the backend with full_name and email
+        const populatedStudent = (app as any).student_id;
+
+        // Also try to find profile for additional info (phone, skills)
         const studentProfile = profilesRes.data.find((p: Profile) => {
-          // Use user_id_string if available, otherwise extract from user_id object
-          const profileUserId = (p as any).user_id_string || 
-            (typeof p.user_id === "string" ? p.user_id : 
-            (p.user_id as any)?._id?.toString() || (p.user_id as any)?.toString());
-          
-          const match = profileUserId === app.student_id.toString();
+          const profileUserId =
+            (p as any).user_id_string ||
+            (typeof p.user_id === "string"
+              ? p.user_id
+              : (p.user_id as any)?._id?.toString() ||
+                (p.user_id as any)?.toString());
+
+          const studentIdStr =
+            typeof populatedStudent === "object"
+              ? populatedStudent._id?.toString() || populatedStudent.toString()
+              : app.student_id?.toString();
+
+          const match = profileUserId === studentIdStr;
           if (match) {
             console.log("✅ Found matching profile:", p);
           }
           return match;
         });
-        
-        const studentUser = usersRes.data.find(
-          (u: any) => {
-            const match = u.id?.toString() === app.student_id?.toString();
-            if (match) {
-              console.log("✅ Found matching user:", u);
-            }
-            return match;
+
+        // Fallback to users list if student_id wasn't populated
+        const studentUser = usersRes.data.find((u: any) => {
+          const studentIdStr =
+            typeof populatedStudent === "object"
+              ? populatedStudent._id?.toString() || populatedStudent.toString()
+              : app.student_id?.toString();
+          const match = u.id?.toString() === studentIdStr;
+          if (match) {
+            console.log("✅ Found matching user:", u);
           }
+          return match;
+        });
+
+        // Priority: populated student_id.full_name > profile.full_name > user.full_name
+        const finalName =
+          populatedStudent?.full_name ||
+          studentProfile?.full_name ||
+          studentUser?.full_name ||
+          "Unknown";
+
+        console.log(
+          "populatedStudent?.full_name:",
+          populatedStudent?.full_name
         );
-        
-        console.log("studentProfile found:", !!studentProfile, "full_name:", studentProfile?.full_name);
-        console.log("studentUser found:", !!studentUser, "full_name:", studentUser?.full_name);
-        
-        const finalName = studentProfile?.full_name || studentUser?.full_name || "Unknown";
+        console.log("studentProfile?.full_name:", studentProfile?.full_name);
+        console.log("studentUser?.full_name:", studentUser?.full_name);
         console.log("Final student_name:", finalName);
-        
+
         return {
           ...app,
           student_name: finalName,
-          student_email: studentUser?.email || "N/A",
+          student_email: populatedStudent?.email || studentUser?.email || "N/A",
           student_phone: studentProfile?.phone || "N/A",
           student_skills: studentProfile?.skills || [],
         };
@@ -246,20 +270,30 @@ const FacultyDashboard = () => {
   };
 
   const openChat = async (app: Application) => {
+    // Extract the actual student ID (it might be populated as an object)
+    const populatedStudent = (app as any).student_id;
+    const actualStudentId =
+      typeof populatedStudent === "object"
+        ? populatedStudent._id || populatedStudent.id
+        : app.student_id;
+
+    console.log("Opening chat - actualStudentId:", actualStudentId);
+
     // Fetch student profile picture
     let studentProfilePicture = "";
     try {
-      const profileRes = await api.get(`/api/profiles/user/${app.student_id}`);
+      const profileRes = await api.get(`/api/profiles/user/${actualStudentId}`);
+      console.log("Profile response:", profileRes.data);
       if (profileRes.data?.profile_picture) {
         studentProfilePicture = profileRes.data.profile_picture;
       }
     } catch (error) {
-      console.log("Could not fetch student profile picture");
+      console.log("Could not fetch student profile picture:", error);
     }
 
     setSelectedChat({
       applicationId: app._id || app.id,
-      studentId: app.student_id,
+      studentId: actualStudentId,
       studentName: app.student_name || "Student",
       opportunityTitle: app.opportunity_title || "Opportunity",
       studentProfilePicture: studentProfilePicture,
@@ -483,9 +517,11 @@ const FacultyDashboard = () => {
           ))}
         </div>
         {isLoading ? (
-          <div className="text-center py-12">
-            <div className="inline-block w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-gray-600">Loading your dashboard...</p>
+          <div className="text-center py-32">
+            <div className="inline-block w-20 h-20 border-[6px] border-emerald-200 border-t-emerald-600 rounded-full animate-spin shadow-lg"></div>
+            <p className="mt-8 text-gray-600 text-xl font-semibold animate-pulse">
+              Loading your dashboard...
+            </p>
           </div>
         ) : (
           <>
