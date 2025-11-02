@@ -194,7 +194,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           ) : (
             messages.map((msg) => {
               const isSender = msg.sender_id._id === user?.id;
-              
+
               return (
                 <motion.div
                   key={msg._id}
@@ -220,7 +220,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                       )}
                     </div>
                   )}
-                  
+
                   <div
                     className={`max-w-[70%] rounded-2xl px-4 py-2 ${
                       isSender
@@ -237,7 +237,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                       {formatTime(msg.created_at)}
                     </p>
                   </div>
-                  
+
                   {/* Profile Picture - show on right for sent messages */}
                   {isSender && (
                     <div className="flex-shrink-0">

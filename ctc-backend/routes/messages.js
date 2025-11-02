@@ -35,9 +35,13 @@ router.get("/:applicationId", auth, async (req, res) => {
     const Profile = require("../models/Profile");
     const messagesWithProfiles = await Promise.all(
       messages.map(async (msg) => {
-        const senderProfile = await Profile.findOne({ user_id: msg.sender_id._id });
-        const receiverProfile = await Profile.findOne({ user_id: msg.receiver_id._id });
-        
+        const senderProfile = await Profile.findOne({
+          user_id: msg.sender_id._id,
+        });
+        const receiverProfile = await Profile.findOne({
+          user_id: msg.receiver_id._id,
+        });
+
         return {
           ...msg.toObject(),
           sender_id: {

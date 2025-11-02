@@ -140,6 +140,13 @@ const FacultyDashboard = () => {
         api.get("/api/profiles"),
       ]);
 
+      console.log("=== DEBUG: Fetched Data ===");
+      console.log("Total users:", usersRes.data.length);
+      console.log("Sample user:", usersRes.data[0]);
+      console.log("Total profiles:", profilesRes.data.length);
+      console.log("Sample profile:", profilesRes.data[0]);
+      console.log("Total applications:", appRes.data.length);
+
       setOpportunities(oppRes.data);
 
       // Get applications for faculty's opportunities
@@ -163,19 +170,42 @@ const FacultyDashboard = () => {
       console.log("Filtered applications:", myApplications);
       // Enrich applications with student data
       const enrichedApplications = myApplications.map((app: Application) => {
-        const studentProfile = profilesRes.data.find(
-          (p: Profile) => p.user_id === app.student_id
-        );
+        console.log("=== Processing application ===");
+        console.log("app.student_id:", app.student_id, "Type:", typeof app.student_id);
+        
+        const studentProfile = profilesRes.data.find((p: Profile) => {
+          // Use user_id_string if available, otherwise extract from user_id object
+          const profileUserId = (p as any).user_id_string || 
+            (typeof p.user_id === "string" ? p.user_id : 
+            (p.user_id as any)?._id?.toString() || (p.user_id as any)?.toString());
+          
+          const match = profileUserId === app.student_id.toString();
+          if (match) {
+            console.log("✅ Found matching profile:", p);
+          }
+          return match;
+        });
+        
         const studentUser = usersRes.data.find(
-          (u: any) => u.id === app.student_id
+          (u: any) => {
+            const match = u.id?.toString() === app.student_id?.toString();
+            if (match) {
+              console.log("✅ Found matching user:", u);
+            }
+            return match;
+          }
         );
+        
+        console.log("studentProfile found:", !!studentProfile, "full_name:", studentProfile?.full_name);
+        console.log("studentUser found:", !!studentUser, "full_name:", studentUser?.full_name);
+        
+        const finalName = studentProfile?.full_name || studentUser?.full_name || "Unknown";
+        console.log("Final student_name:", finalName);
+        
         return {
           ...app,
-          student_name:
-            studentProfile?.full_name ||
-            (studentUser as any)?.full_name ||
-            "Unknown",
-          student_email: (studentUser as any)?.email || "N/A",
+          student_name: finalName,
+          student_email: studentUser?.email || "N/A",
           student_phone: studentProfile?.phone || "N/A",
           student_skills: studentProfile?.skills || [],
         };
@@ -276,7 +306,9 @@ const FacultyDashboard = () => {
     setEditedProfile({ ...editedProfile, skills: updatedSkills });
   };
 
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePictureChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -461,86 +493,111 @@ const FacultyDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden"
+                className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-green-100/50"
               >
-                <div className="bg-gradient-to-r from-green-600 to-blue-600 p-8 text-white relative">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-4">
+                {/* Profile Header */}
+                <div className="bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 p-10 text-white relative">
+                  {/* Decorative elements */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-teal-500/20 rounded-full blur-2xl -ml-24 -mb-24"></div>
+
+                  <div className="flex justify-between items-start relative z-10">
+                    <div className="flex items-center gap-6">
                       {/* Profile Picture */}
                       <div className="relative group">
-                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white/30 bg-white/20 backdrop-blur-sm">
-                          {editedProfile.profile_picture || profile?.profile_picture ? (
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/30 shadow-2xl bg-white/20 backdrop-blur-md"
+                        >
+                          {editedProfile.profile_picture ||
+                          profile?.profile_picture ? (
                             <img
-                              src={editedProfile.profile_picture || profile?.profile_picture}
+                              src={
+                                editedProfile.profile_picture ||
+                                profile?.profile_picture
+                              }
                               alt="Profile"
                               className="w-full h-full object-cover"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <User size={40} className="text-white" />
+                              <User
+                                size={48}
+                                className="text-white drop-shadow-lg"
+                              />
                             </div>
                           )}
-                        </div>
-                        
+                        </motion.div>
+
                         {/* Upload/Remove buttons - only show when editing */}
                         {isEditing && (
-                          <div className="absolute -bottom-1 -right-1 flex gap-1">
+                          <div className="absolute -bottom-2 -right-2 flex gap-2">
                             <label className="cursor-pointer">
-                              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors">
-                                <Camera size={16} className="text-white" />
+                              <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
+                              >
+                                <Camera size={20} className="text-white" />
                                 <input
                                   type="file"
                                   accept="image/*"
                                   onChange={handleProfilePictureChange}
                                   className="hidden"
                                 />
-                              </div>
+                              </motion.div>
                             </label>
-                            
-                            {(editedProfile.profile_picture || profile?.profile_picture) && (
-                              <button
+
+                            {(editedProfile.profile_picture ||
+                              profile?.profile_picture) && (
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
                                 onClick={removeProfilePicture}
-                                className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+                                className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
                               >
-                                <X size={16} className="text-white" />
-                              </button>
+                                <X size={20} className="text-white" />
+                              </motion.button>
                             )}
                           </div>
                         )}
                       </div>
-                      
+
                       <div>
-                        <h2 className="text-3xl font-bold">
+                        <h2 className="text-4xl font-black drop-shadow-lg mb-2">
                           {profile?.full_name ||
                             user?.full_name ||
                             user?.username ||
                             "Your Name"}
                         </h2>
-                        <p className="text-white/80">{user?.email}</p>
-                        <p className="text-white/60 text-sm capitalize">
+                        <p className="text-white/95 text-lg font-medium">
+                          {user?.email}
+                        </p>
+                        <p className="text-white/80 text-sm capitalize mt-2 bg-white/25 inline-block px-4 py-1.5 rounded-full font-semibold backdrop-blur-sm">
                           Faculty
                         </p>
                       </div>
                     </div>
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={isEditing ? saveProfile : handleEditToggle}
-                      className="px-6 py-3 bg-white text-green-600 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
+                      className="px-8 py-3.5 bg-white text-green-600 rounded-xl font-bold hover:shadow-2xl transition-all flex items-center gap-2 shadow-xl border-2 border-white/50"
                     >
                       {isEditing ? (
                         <>
-                          <Save size={18} />
-                          Save Changes
+                          <Save size={20} /> Save Changes
                         </>
                       ) : (
                         <>
-                          <Edit2 size={18} />
-                          Edit Profile
+                          <Edit2 size={20} /> Edit Profile
                         </>
                       )}
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
-                <div className="p-8">
+                {/* Profile Content */}
+                <div className="p-8 bg-white/60 backdrop-blur-sm">
                   {profile?._id || profile?.id || isEditing ? (
                     <div className="space-y-6">
                       <div className="grid md:grid-cols-2 gap-6">

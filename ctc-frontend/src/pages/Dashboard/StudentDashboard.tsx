@@ -212,7 +212,9 @@ const StudentDashboard = () => {
     setEditedProfile({ ...editedProfile, skills: updatedSkills });
   };
 
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePictureChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -509,19 +511,26 @@ const StudentDashboard = () => {
                           whileHover={{ scale: 1.05 }}
                           className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/30 shadow-2xl bg-white/20 backdrop-blur-md"
                         >
-                          {editedProfile.profile_picture || profile?.profile_picture ? (
+                          {editedProfile.profile_picture ||
+                          profile?.profile_picture ? (
                             <img
-                              src={editedProfile.profile_picture || profile?.profile_picture}
+                              src={
+                                editedProfile.profile_picture ||
+                                profile?.profile_picture
+                              }
                               alt="Profile"
                               className="w-full h-full object-cover"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <User size={48} className="text-white drop-shadow-lg" />
+                              <User
+                                size={48}
+                                className="text-white drop-shadow-lg"
+                              />
                             </div>
                           )}
                         </motion.div>
-                        
+
                         {/* Upload/Remove buttons - only show when editing */}
                         {isEditing && (
                           <div className="absolute -bottom-2 -right-2 flex gap-2">
@@ -540,8 +549,9 @@ const StudentDashboard = () => {
                                 />
                               </motion.div>
                             </label>
-                            
-                            {(editedProfile.profile_picture || profile?.profile_picture) && (
+
+                            {(editedProfile.profile_picture ||
+                              profile?.profile_picture) && (
                               <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
@@ -554,7 +564,7 @@ const StudentDashboard = () => {
                           </div>
                         )}
                       </div>
-                      
+
                       <div>
                         <h2 className="text-4xl font-black drop-shadow-lg mb-2">
                           {profile?.full_name ||

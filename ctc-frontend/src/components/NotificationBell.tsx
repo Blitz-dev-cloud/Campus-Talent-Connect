@@ -1,12 +1,18 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, CheckCircle, AlertCircle, Info } from "lucide-react";
+import {
+  Bell,
+  CheckCircle,
+  AlertCircle,
+  Info,
+  MessageCircle,
+} from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import api from "../lib/api";
 
 interface Notification {
   id: string | number;
-  type: "info" | "success" | "warning";
+  type: "info" | "success" | "warning" | "message";
   title: string;
   message: string;
   createdAt: string;
@@ -20,87 +26,113 @@ const NotificationBell = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   // Get read notifications from localStorage for this specific user
-  const getReadNotifications = (): Set<string> => {
+  const getReadNotifications = useCallback((): Set<string> => {
     if (!user?.id) return new Set();
     const stored = localStorage.getItem(`notifications_read_${user.id}`);
     return stored ? new Set(JSON.parse(stored)) : new Set();
-  };
-
-  // Save read notifications to localStorage for this specific user
-  const saveReadNotifications = (readIds: Set<string>) => {
-    if (!user?.id) return;
-    localStorage.setItem(
-      `notifications_read_${user.id}`,
-      JSON.stringify([...readIds])
-    );
-  };
-
-  useEffect(() => {
-    if (user) {
-      fetchNotifications();
-    }
   }, [user]);
 
-  const fetchNotifications = async () => {
+  // Save read notifications to localStorage for this specific user
+  const saveReadNotifications = useCallback(
+    (readIds: Set<string>) => {
+      if (!user?.id) return;
+      localStorage.setItem(
+        `notifications_read_${user.id}`,
+        JSON.stringify([...readIds])
+      );
+    },
+    [user]
+  );
+
+  const fetchNotifications = useCallback(async () => {
+    if (!user?.id) return;
+
     try {
       // Fetch applications for notifications - backend already filters by user role
       const response = await api.get("/api/applications");
       const apps = response.data || [];
 
+      // Fetch unread messages count
+      let unreadMessagesCount = 0;
+      let messageNotifications: Notification[] = [];
+      try {
+        const messagesResponse = await api.get("/api/messages/unread/count");
+        unreadMessagesCount = messagesResponse.data?.count || 0;
+
+        // If there are unread messages, create a notification for it
+        if (unreadMessagesCount > 0) {
+          messageNotifications = [
+            {
+              id: "unread-messages",
+              type: "message" as const,
+              title: "New Messages",
+              message: `You have ${unreadMessagesCount} unread message${
+                unreadMessagesCount > 1 ? "s" : ""
+              }`,
+              createdAt: new Date().toISOString(),
+              read: false,
+            },
+          ];
+        }
+      } catch (error) {
+        console.error("Failed to fetch message notifications:", error);
+      }
+
       // Get previously read notifications for this user
       const readIds = getReadNotifications();
 
-      const userRole = (user as any)?.role;
+      const userRole = user?.role;
 
-      const notifs: Notification[] = apps.map((app: any, index: number) => {
+      const notifs: Notification[] = apps.map((app: unknown, index: number) => {
+        const appData = app as Record<string, unknown>;
         let type: "info" | "success" | "warning" = "info";
         let title = "Application Update";
         let message = "";
-        const notifId = app.id || app._id || `${index}`;
+        const notifId = appData.id || appData._id || `${index}`;
 
         // Role-specific notification messages
         if (userRole === "student") {
           // Student sees their own application status
-          if (app.status === "accepted") {
+          if (appData.status === "accepted") {
             type = "success";
             title = "Application Accepted!";
             message = `Your application for "${
-              app.opportunity_title || "the opportunity"
+              appData.opportunity_title || "the opportunity"
             }" has been accepted.`;
-          } else if (app.status === "rejected") {
+          } else if (appData.status === "rejected") {
             type = "warning";
             title = "Application Status";
             message = `Your application for "${
-              app.opportunity_title || "the opportunity"
+              appData.opportunity_title || "the opportunity"
             }" was not selected.`;
           } else {
             type = "info";
             title = "Application Submitted";
             message = `Your application for "${
-              app.opportunity_title || "the opportunity"
+              appData.opportunity_title || "the opportunity"
             }" is under review.`;
           }
         } else if (userRole === "faculty" || userRole === "alumni") {
           // Faculty/Alumni see applications TO their opportunities
-          const studentName = app.student_name || "A student";
+          const studentName = appData.student_name || "A student";
 
-          if (app.status === "pending") {
+          if (appData.status === "pending") {
             type = "info";
             title = "New Application";
             message = `${studentName} applied to "${
-              app.opportunity_title || "your opportunity"
+              appData.opportunity_title || "your opportunity"
             }". Please review.`;
-          } else if (app.status === "accepted") {
+          } else if (appData.status === "accepted") {
             type = "success";
             title = "Application Accepted";
             message = `You accepted ${studentName}'s application for "${
-              app.opportunity_title || "your opportunity"
+              appData.opportunity_title || "your opportunity"
             }".`;
-          } else if (app.status === "rejected") {
+          } else if (appData.status === "rejected") {
             type = "warning";
             title = "Application Rejected";
             message = `You rejected ${studentName}'s application for "${
-              app.opportunity_title || "your opportunity"
+              appData.opportunity_title || "your opportunity"
             }".`;
           }
         }
@@ -110,17 +142,29 @@ const NotificationBell = () => {
           type,
           title,
           message,
-          createdAt: app.created_at || new Date().toISOString(),
+          createdAt: (appData.created_at as string) || new Date().toISOString(),
           read: readIds.has(String(notifId)),
         };
       });
 
-      setNotifications(notifs);
-      setUnreadCount(notifs.filter((n) => !n.read).length);
+      // Merge message notifications with application notifications
+      const allNotifications = [...messageNotifications, ...notifs];
+
+      setNotifications(allNotifications);
+      setUnreadCount(allNotifications.filter((n) => !n.read).length);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
     }
-  };
+  }, [user, getReadNotifications]);
+
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+      // Poll for new notifications every 10 seconds
+      const interval = setInterval(fetchNotifications, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [user, fetchNotifications]);
 
   const markAsRead = (id: string | number) => {
     const readIds = getReadNotifications();
@@ -142,12 +186,14 @@ const NotificationBell = () => {
     setUnreadCount(0);
   };
 
-  const getIcon = (type: string) => {
+  const getIcon = (type: Notification["type"]) => {
     switch (type) {
       case "success":
         return <CheckCircle className="w-5 h-5 text-green-500" />;
       case "warning":
         return <AlertCircle className="w-5 h-5 text-orange-500" />;
+      case "message":
+        return <MessageCircle className="w-5 h-5 text-purple-500" />;
       default:
         return <Info className="w-5 h-5 text-blue-500" />;
     }

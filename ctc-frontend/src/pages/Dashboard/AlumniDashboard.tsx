@@ -127,10 +127,16 @@ const AlumniDashboard = () => {
       console.log("Filtered applications:", myApplications);
       // Enrich applications with student data
       const enrichedApplications = myApplications.map((app) => {
-        const studentProfile = profilesRes.data.find(
-          (p) => p.user_id === app.student_id
+        const studentProfile = profilesRes.data.find((p) => {
+          // Use user_id_string if available, otherwise extract from user_id object
+          const profileUserId = (p as any).user_id_string || 
+            (typeof p.user_id === "string" ? p.user_id : 
+            (p.user_id as any)?._id?.toString() || (p.user_id as any)?.toString());
+          return profileUserId === app.student_id.toString();
+        });
+        const studentUser = usersRes.data.find(
+          (u) => u.id?.toString() === app.student_id?.toString()
         );
-        const studentUser = usersRes.data.find((u) => u.id === app.student_id);
         return {
           ...app,
           student_name:
@@ -231,7 +237,9 @@ const AlumniDashboard = () => {
     setEditedProfile({ ...editedProfile, skills: updatedSkills });
   };
 
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePictureChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -416,83 +424,105 @@ const AlumniDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden"
+                className="bg-white rounded-3xl shadow-2xl overflow-hidden"
               >
-                <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-8 text-white relative">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-4">
+                <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-fuchsia-600 p-10 text-white relative overflow-hidden">
+                  {/* Decorative background elements */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-pink-500/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
+
+                  <div className="flex justify-between items-start relative z-10">
+                    <div className="flex items-center gap-6">
                       {/* Profile Picture */}
                       <div className="relative group">
-                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white/30 bg-white/20 backdrop-blur-sm">
-                          {editedProfile.profile_picture || profile?.profile_picture ? (
+                        <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/30 bg-white/20 backdrop-blur-sm shadow-xl">
+                          {editedProfile.profile_picture ||
+                          profile?.profile_picture ? (
                             <img
-                              src={editedProfile.profile_picture || profile?.profile_picture}
+                              src={
+                                editedProfile.profile_picture ||
+                                profile?.profile_picture
+                              }
                               alt="Profile"
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <User size={40} className="text-white" />
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500">
+                              <User size={48} className="text-white" />
                             </div>
                           )}
                         </div>
-                        
+
                         {/* Upload/Remove buttons - only show when editing */}
                         {isEditing && (
-                          <div className="absolute -bottom-1 -right-1 flex gap-1">
+                          <div className="absolute -bottom-2 -right-2 flex gap-2">
                             <label className="cursor-pointer">
-                              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors">
-                                <Camera size={16} className="text-white" />
+                              <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="w-10 h-10 bg-white text-purple-600 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
+                              >
+                                <Camera size={18} />
                                 <input
                                   type="file"
                                   accept="image/*"
                                   onChange={handleProfilePictureChange}
                                   className="hidden"
                                 />
-                              </div>
+                              </motion.div>
                             </label>
-                            
-                            {(editedProfile.profile_picture || profile?.profile_picture) && (
-                              <button
+
+                            {(editedProfile.profile_picture ||
+                              profile?.profile_picture) && (
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={removeProfilePicture}
-                                className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+                                className="w-10 h-10 bg-red-500 text-white rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl hover:bg-red-600 transition-all"
                               >
-                                <X size={16} className="text-white" />
-                              </button>
+                                <X size={18} />
+                              </motion.button>
                             )}
                           </div>
                         )}
                       </div>
-                      
+
                       <div>
-                        <h2 className="text-3xl font-bold">
+                        <h2 className="text-4xl font-black mb-2">
                           {profile?.full_name ||
                             user?.full_name ||
                             user?.username ||
                             "Your Name"}
                         </h2>
-                        <p className="text-white/80">{user?.email}</p>
-                        <p className="text-white/60 text-sm capitalize">
-                          Alumni
+                        <p className="text-white/90 text-lg font-medium mb-1">
+                          {user?.email}
                         </p>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full">
+                          <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                          <p className="text-white/90 text-sm font-semibold capitalize">
+                            Alumni
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       onClick={isEditing ? saveProfile : handleEditToggle}
-                      className="px-6 py-3 bg-white text-purple-600 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
+                      className="px-6 py-3 bg-white text-purple-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                     >
                       {isEditing ? (
                         <>
-                          <Save size={18} />
+                          <Save size={20} />
                           Save Changes
                         </>
                       ) : (
                         <>
-                          <Edit2 size={18} />
+                          <Edit2 size={20} />
                           Edit Profile
                         </>
                       )}
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
                 <div className="p-8">
