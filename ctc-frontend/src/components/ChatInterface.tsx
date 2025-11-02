@@ -140,7 +140,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
       onClick={onClose}
     >
       <motion.div
@@ -148,32 +148,32 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col overflow-hidden"
+        className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl h-[90vh] sm:h-[600px] flex flex-col overflow-hidden"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 text-white">
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 sm:p-4 text-white">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
               {/* Receiver Profile Picture */}
               {receiverProfilePicture ? (
                 <img
                   src={receiverProfilePicture}
                   alt={receiverName}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-white/50"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-white/50 flex-shrink-0"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center border-2 border-white/50">
-                  <User size={20} className="text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center border-2 border-white/50 flex-shrink-0">
+                  <User size={18} className="text-white sm:w-5 sm:h-5" />
                 </div>
               )}
-              <div>
-                <h3 className="font-semibold text-lg">{receiverName}</h3>
-                <p className="text-sm opacity-90">{opportunityTitle}</p>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-semibold text-sm sm:text-lg truncate">{receiverName}</h3>
+                <p className="text-xs sm:text-sm opacity-90 truncate">{opportunityTitle}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="hover:bg-white/20 rounded-lg p-2 transition-colors"
+              className="hover:bg-white/20 rounded-lg p-1.5 sm:p-2 transition-colors flex-shrink-0"
             >
               <X className="w-5 h-5" />
             </button>
@@ -181,7 +181,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50">
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
@@ -264,7 +264,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         {/* Input */}
         <form
           onSubmit={handleSendMessage}
-          className="p-4 bg-white border-t border-gray-200"
+          className="p-3 sm:p-4 bg-white border-t border-gray-200"
         >
           <div className="flex gap-2">
             <input
@@ -272,16 +272,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message..."
-              className="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm sm:text-base"
               disabled={isSending}
             />
             <button
               type="submit"
               disabled={isSending || !newMessage.trim()}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center gap-2"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center gap-2 text-sm sm:text-base"
             >
-              <Send className="w-5 h-5" />
-              {isSending ? "Sending..." : "Send"}
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">{isSending ? "Sending..." : "Send"}</span>
+              <span className="sm:hidden">{isSending ? "..." : ""}</span>
             </button>
           </div>
         </form>

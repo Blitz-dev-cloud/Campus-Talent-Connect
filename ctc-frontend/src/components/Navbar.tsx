@@ -279,7 +279,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                   {/* Login/Register for non-authenticated users */}
                   <button
                     onClick={() => {
-                      navigate("/login");
+                      navigate("/auth/login");
                       setIsOpen(false);
                     }}
                     className="w-full px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-all flex items-center gap-3 font-medium"
@@ -289,7 +289,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                   </button>
                   <button
                     onClick={() => {
-                      navigate("/register");
+                      navigate("/auth/register");
                       setIsOpen(false);
                     }}
                     className="w-full px-4 py-3 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-3 font-medium justify-center"

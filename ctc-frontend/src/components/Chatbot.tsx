@@ -312,17 +312,17 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
   return (
     <>
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[600px] bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 flex flex-col overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-20 sm:bottom-24 right-3 sm:right-6 w-[calc(100vw-24px)] sm:w-96 h-[calc(100vh-120px)] sm:h-[600px] max-h-[600px] bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-200/50 flex flex-col overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
-          <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-5">
+          <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-4 sm:p-5">
             <div className="absolute inset-0 bg-black/10"></div>
             <div className="relative flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                  <Sparkles size={20} className="text-white" />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <Sparkles size={18} className="text-white sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-lg">
+                  <h3 className="font-bold text-white text-base sm:text-lg">
                     Campus Helper
                   </h3>
                   <p className="text-white/80 text-xs">
@@ -334,7 +334,7 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
                 {messages.length > 0 && (
                   <button
                     onClick={clearHistory}
-                    className="px-3 py-1.5 text-xs text-white/90 hover:text-white bg-white/10 hover:bg-white/20 rounded-lg transition-all"
+                    className="px-2 sm:px-3 py-1.5 text-xs text-white/90 hover:text-white bg-white/10 hover:bg-white/20 rounded-lg transition-all"
                     title="Clear chat history"
                   >
                     Clear
@@ -351,26 +351,26 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-gradient-to-b from-transparent to-blue-50/30">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3 sm:space-y-4 bg-gradient-to-b from-transparent to-blue-50/30">
             {messages.length === 0 && (
-              <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                  <MessageCircle size={32} className="text-white" />
+              <div className="h-full flex flex-col items-center justify-center text-center space-y-3 sm:space-y-4">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                  <MessageCircle size={28} className="text-white sm:w-8 sm:h-8" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-800 mb-1">
+                  <h4 className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">
                     Welcome to CTC!
                   </h4>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500">
                     Ask about opportunities or anything else
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2 justify-center px-4">
+                <div className="flex flex-wrap gap-2 justify-center px-2 sm:px-4">
                   {quickQuestions.map((q, idx) => (
                     <button
                       key={idx}
                       onClick={() => setInput(q.query)}
-                      className="px-3 py-1.5 bg-white rounded-full text-xs text-gray-700 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-blue-300"
+                      className="px-2.5 sm:px-3 py-1.5 bg-white rounded-full text-xs text-gray-700 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-blue-300"
                     >
                       {q.label}
                     </button>
@@ -387,14 +387,14 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
                 } animate-in fade-in slide-in-from-bottom-2 duration-300`}
               >
                 <div
-                  className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm shadow-sm ${
+                  className={`max-w-[85%] sm:max-w-[80%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm shadow-sm ${
                     msg.role === "user"
                       ? "bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-br-md whitespace-pre-wrap"
                       : "bg-white text-gray-800 rounded-bl-md border border-gray-100"
                   }`}
                 >
                   {msg.role === "user" ? (
-                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    <div className="whitespace-pre-wrap break-words">{msg.content}</div>
                   ) : (
                     formatBotMessage(msg.content)
                   )}
@@ -423,21 +423,21 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
           </div>
 
           {/* Input */}
-          <div className="p-4 bg-white/50 backdrop-blur-sm border-t border-gray-100">
-            <div className="flex gap-2 bg-white rounded-2xl shadow-lg p-2 border border-gray-200">
+          <div className="p-3 sm:p-4 bg-white/50 backdrop-blur-sm border-t border-gray-100">
+            <div className="flex gap-2 bg-white rounded-xl sm:rounded-2xl shadow-lg p-2 border border-gray-200">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Ask about opportunities..."
-                className="flex-1 bg-transparent px-3 py-2 text-sm focus:outline-none text-gray-800 placeholder-gray-400"
+                className="flex-1 bg-transparent px-2 sm:px-3 py-2 text-xs sm:text-sm focus:outline-none text-gray-800 placeholder-gray-400"
               />
               <button
                 onClick={sendMessage}
                 disabled={isLoading || !input.trim()}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-2.5 rounded-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 active:scale-95"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-2 sm:p-2.5 rounded-lg sm:rounded-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 active:scale-95"
               >
-                <Send size={18} />
+                <Send size={16} className="sm:w-[18px] sm:h-[18px]" />
               </button>
             </div>
           </div>
@@ -447,12 +447,12 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all duration-300 hover:scale-110 active:scale-95 group z-40 overflow-hidden"
+        className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all duration-300 hover:scale-110 active:scale-95 group z-40 overflow-hidden"
       >
         <div className="group-hover:rotate-[360deg] transition-transform duration-700 ease-in-out">
-          <Star size={32} className="fill-white stroke-none" />
+          <Star size={28} className="fill-white stroke-none sm:w-8 sm:h-8" />
         </div>
-        <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+        <div className="absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
       </button>
     </>
   );
