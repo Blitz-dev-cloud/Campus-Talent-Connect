@@ -20,9 +20,11 @@ import {
   Clock,
   Users,
   FileText,
+  MessageCircle,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
+import ChatInterface from "../../components/ChatInterface";
 
 interface Profile {
   _id?: string;
@@ -55,6 +57,14 @@ const AlumniDashboard = () => {
     salary: "",
   });
   const [isPosting, setIsPosting] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [selectedChat, setSelectedChat] = useState<{
+    applicationId: string;
+    studentId: string;
+    studentName: string;
+    opportunityTitle: string;
+  } | null>(null);
+
   useEffect(() => {
     fetchData();
   }, [user]);
@@ -155,6 +165,22 @@ const AlumniDashboard = () => {
       toast.error("Failed to update application");
     }
   };
+
+  const openChat = (app) => {
+    setSelectedChat({
+      applicationId: app._id || app.id,
+      studentId: app.student_id,
+      studentName: app.student_name || "Student",
+      opportunityTitle: app.opportunity_title || "Opportunity",
+    });
+    setChatOpen(true);
+  };
+
+  const closeChat = () => {
+    setChatOpen(false);
+    setSelectedChat(null);
+  };
+
   const viewResume = (resume_base64, resume_name) => {
     const pdfWindow = window.open("");
     if (pdfWindow) {
@@ -914,6 +940,17 @@ const AlumniDashboard = () => {
                               </button>
                             </div>
                           )}
+                          {app.status === "accepted" && (
+                            <div className="pt-4 border-t border-gray-200">
+                              <button
+                                onClick={() => openChat(app)}
+                                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                              >
+                                <MessageCircle size={18} />
+                                Message Student
+                              </button>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -931,6 +968,17 @@ const AlumniDashboard = () => {
           </>
         )}
       </div>
+
+      {/* Chat Interface */}
+      {chatOpen && selectedChat && (
+        <ChatInterface
+          applicationId={selectedChat.applicationId}
+          receiverId={selectedChat.studentId}
+          receiverName={selectedChat.studentName}
+          opportunityTitle={selectedChat.opportunityTitle}
+          onClose={closeChat}
+        />
+      )}
     </div>
   );
 };

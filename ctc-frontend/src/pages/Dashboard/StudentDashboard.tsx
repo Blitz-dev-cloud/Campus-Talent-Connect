@@ -894,36 +894,27 @@ const StudentDashboard = () => {
                                     console.log("Message button clicked for app:", app);
                                     console.log("app.opportunity:", app.opportunity);
                                     
-                                    // app.opportunity might already be populated
+                                    // Get the opportunity ID from the populated object or string
+                                    let opportunityId = "";
                                     if (typeof app.opportunity === 'object' && app.opportunity !== null) {
-                                      // Already populated, use it directly with all its properties
-                                      const oppData = app.opportunity;
-                                      console.log("Using populated opportunity data:", oppData);
-                                      console.log("posted_by from oppData:", oppData.posted_by);
-                                      
-                                      openChat(app, {
-                                        ...oppData, // Spread all existing properties
-                                        _id: oppData._id,
-                                        id: oppData._id,
-                                        // Fill in any missing required fields with defaults
-                                        status: (oppData as any).status || "active",
-                                        requirements: (oppData as any).requirements || [],
-                                        description: (oppData as any).description || "",
-                                        type: (oppData as any).type || "",
-                                      });
+                                      opportunityId = app.opportunity._id;
                                     } else {
-                                      // It's just an ID, find the opportunity
-                                      console.log("Searching for opportunity with ID:", app.opportunity);
-                                      const opportunity = opportunities.find(
-                                        (o) => o._id === app.opportunity || o.id === app.opportunity
-                                      );
-                                      if (opportunity) {
-                                        console.log("Found opportunity:", opportunity);
-                                        openChat(app, opportunity);
-                                      } else {
-                                        console.error("Opportunity not found!");
-                                        toast.error("Unable to open chat - opportunity not found");
-                                      }
+                                      opportunityId = app.opportunity;
+                                    }
+                                    
+                                    console.log("Looking for opportunity ID:", opportunityId);
+                                    
+                                    // Find the full opportunity from the opportunities list
+                                    const fullOpportunity = opportunities.find(
+                                      (o) => o._id === opportunityId || o.id === opportunityId
+                                    );
+                                    
+                                    if (fullOpportunity) {
+                                      console.log("Found full opportunity:", fullOpportunity);
+                                      openChat(app, fullOpportunity);
+                                    } else {
+                                      console.error("Opportunity not found in opportunities list!");
+                                      toast.error("Unable to open chat - opportunity not found");
                                     }
                                   }}
                                   className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center gap-2"
