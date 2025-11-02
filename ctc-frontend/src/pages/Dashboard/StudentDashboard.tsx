@@ -48,15 +48,32 @@ interface Opportunity {
   type: string;
   location: string;
   salary?: string;
-  posted_by: string;
+  posted_by: string | {
+    _id: string;
+    full_name: string;
+    email: string;
+  };
   status: string;
 }
 
 interface Application {
   _id?: string;
   id: string;
+  opportunity: string | {
+    _id: string;
+    title: string;
+    company: string;
+    location: string;
+    posted_by: string | {
+      _id: string;
+      full_name: string;
+      email: string;
+    };
+  };
   opportunity_id: string;
+  opportunity_title?: string;
   user_id: string;
+  student_id?: string;
   status: string;
   cover_letter: string;
   resume_base64: string;
@@ -65,6 +82,7 @@ interface Application {
   tenth_percentage: string;
   twelfth_percentage: string;
   applied_date: string;
+  created_at?: string;
 }
 
 interface ApplicationForm {
@@ -255,10 +273,34 @@ const StudentDashboard = () => {
   };
 
   const openChat = (app: Application, opp: Opportunity) => {
+    // Handle posted_by - it could be a string (ID) or populated object
+    let facultyId = "";
+    let facultyName = "Faculty/Alumni";
+    
+    console.log("openChat received opp.posted_by:", opp.posted_by);
+    console.log("Type of posted_by:", typeof opp.posted_by);
+    
+    if (typeof opp.posted_by === 'string') {
+      facultyId = opp.posted_by;
+      console.log("posted_by is string ID:", facultyId);
+    } else if (opp.posted_by && typeof opp.posted_by === 'object') {
+      facultyId = opp.posted_by._id;
+      facultyName = opp.posted_by.full_name;
+      console.log("posted_by is object:", { facultyId, facultyName });
+    }
+
+    console.log("Opening chat with:", {
+      applicationId: app._id || app.id,
+      facultyId,
+      facultyName,
+      opportunityTitle: opp.title,
+      opportunityObject: opp
+    });
+
     setSelectedChat({
       applicationId: app._id || app.id || "",
-      facultyId: opp.posted_by,
-      facultyName: (opp as any).posted_by_name || "Faculty/Alumni",
+      facultyId: facultyId,
+      facultyName: facultyName,
       opportunityTitle: opp.title,
     });
     setChatOpen(true);
@@ -849,11 +891,39 @@ const StudentDashboard = () => {
                               {app.status === "accepted" && (
                                 <button
                                   onClick={() => {
-                                    const opportunity = opportunities.find(
-                                      (o) => o._id === app.opportunity || o.id === app.opportunity
-                                    );
-                                    if (opportunity) {
-                                      openChat(app, opportunity);
+                                    console.log("Message button clicked for app:", app);
+                                    console.log("app.opportunity:", app.opportunity);
+                                    
+                                    // app.opportunity might already be populated
+                                    if (typeof app.opportunity === 'object' && app.opportunity !== null) {
+                                      // Already populated, use it directly with all its properties
+                                      const oppData = app.opportunity;
+                                      console.log("Using populated opportunity data:", oppData);
+                                      console.log("posted_by from oppData:", oppData.posted_by);
+                                      
+                                      openChat(app, {
+                                        ...oppData, // Spread all existing properties
+                                        _id: oppData._id,
+                                        id: oppData._id,
+                                        // Fill in any missing required fields with defaults
+                                        status: (oppData as any).status || "active",
+                                        requirements: (oppData as any).requirements || [],
+                                        description: (oppData as any).description || "",
+                                        type: (oppData as any).type || "",
+                                      });
+                                    } else {
+                                      // It's just an ID, find the opportunity
+                                      console.log("Searching for opportunity with ID:", app.opportunity);
+                                      const opportunity = opportunities.find(
+                                        (o) => o._id === app.opportunity || o.id === app.opportunity
+                                      );
+                                      if (opportunity) {
+                                        console.log("Found opportunity:", opportunity);
+                                        openChat(app, opportunity);
+                                      } else {
+                                        console.error("Opportunity not found!");
+                                        toast.error("Unable to open chat - opportunity not found");
+                                      }
                                     }
                                   }}
                                   className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center gap-2"

@@ -23,7 +23,14 @@ router.get("/", auth, async (req, res) => {
     }
 
     const apps = await Application.find(query)
-      .populate("opportunity", "title company location")
+      .populate({
+        path: "opportunity",
+        select: "title company location posted_by",
+        populate: {
+          path: "posted_by",
+          select: "full_name email"
+        }
+      })
       .populate("student_id", "email full_name")
       .sort({ created_at: -1 });
 

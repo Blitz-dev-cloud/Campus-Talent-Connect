@@ -90,17 +90,22 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
     try {
       setIsSending(true);
-      const response = await api.post("/api/messages", {
+      const messageData = {
         application_id: applicationId,
         receiver_id: receiverId,
         message: newMessage.trim(),
-      });
+      };
+      
+      console.log("Sending message with data:", messageData);
+      
+      const response = await api.post("/api/messages", messageData);
 
       setMessages([...messages, response.data]);
       setNewMessage("");
       toast.success("Message sent!");
     } catch (error) {
       console.error("Error sending message:", error);
+      console.error("Error details:", (error as any)?.response?.data);
       toast.error("Failed to send message");
     } finally {
       setIsSending(false);
