@@ -19,6 +19,22 @@ const NotificationBell = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // Get read notifications from localStorage for this specific user
+  const getReadNotifications = (): Set<string> => {
+    if (!user?.id) return new Set();
+    const stored = localStorage.getItem(`notifications_read_${user.id}`);
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  };
+
+  // Save read notifications to localStorage for this specific user
+  const saveReadNotifications = (readIds: Set<string>) => {
+    if (!user?.id) return;
+    localStorage.setItem(
+      `notifications_read_${user.id}`,
+      JSON.stringify([...readIds])
+    );
+  };
+
   useEffect(() => {
     if (user) {
       fetchNotifications();
@@ -27,53 +43,90 @@ const NotificationBell = () => {
 
   const fetchNotifications = async () => {
     try {
-      // Fetch applications for notifications
+      // Fetch applications for notifications - backend already filters by user role
       const response = await api.get("/api/applications");
       const apps = response.data || [];
+
+      // Get previously read notifications for this user
+      const readIds = getReadNotifications();
+      
+      const userRole = (user as any)?.role;
 
       const notifs: Notification[] = apps.map((app: any, index: number) => {
         let type: "info" | "success" | "warning" = "info";
         let title = "Application Update";
         let message = "";
+        const notifId = app.id || app._id || `${index}`;
 
-        if (app.status === "accepted") {
-          type = "success";
-          title = "Application Accepted!";
-          message = `Your application for "${
-            app.opportunity_title || "the opportunity"
-          }" has been accepted.`;
-        } else if (app.status === "rejected") {
-          type = "warning";
-          title = "Application Status";
-          message = `Your application for "${
-            app.opportunity_title || "the opportunity"
-          }" was not selected.`;
-        } else {
-          type = "info";
-          title = "Application Submitted";
-          message = `Your application for "${
-            app.opportunity_title || "the opportunity"
-          }" is under review.`;
+        // Role-specific notification messages
+        if (userRole === "student") {
+          // Student sees their own application status
+          if (app.status === "accepted") {
+            type = "success";
+            title = "Application Accepted!";
+            message = `Your application for "${
+              app.opportunity_title || "the opportunity"
+            }" has been accepted.`;
+          } else if (app.status === "rejected") {
+            type = "warning";
+            title = "Application Status";
+            message = `Your application for "${
+              app.opportunity_title || "the opportunity"
+            }" was not selected.`;
+          } else {
+            type = "info";
+            title = "Application Submitted";
+            message = `Your application for "${
+              app.opportunity_title || "the opportunity"
+            }" is under review.`;
+          }
+        } else if (userRole === "faculty" || userRole === "alumni") {
+          // Faculty/Alumni see applications TO their opportunities
+          const studentName = app.student_name || "A student";
+          
+          if (app.status === "pending") {
+            type = "info";
+            title = "New Application";
+            message = `${studentName} applied to "${
+              app.opportunity_title || "your opportunity"
+            }". Please review.`;
+          } else if (app.status === "accepted") {
+            type = "success";
+            title = "Application Accepted";
+            message = `You accepted ${studentName}'s application for "${
+              app.opportunity_title || "your opportunity"
+            }".`;
+          } else if (app.status === "rejected") {
+            type = "warning";
+            title = "Application Rejected";
+            message = `You rejected ${studentName}'s application for "${
+              app.opportunity_title || "your opportunity"
+            }".`;
+          }
         }
 
         return {
-          id: app.id || app._id || index,
+          id: notifId,
           type,
           title,
           message,
           createdAt: app.created_at || new Date().toISOString(),
-          read: false,
+          read: readIds.has(String(notifId)),
         };
       });
 
       setNotifications(notifs);
-      setUnreadCount(notifs.length);
+      setUnreadCount(notifs.filter((n) => !n.read).length);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
     }
   };
 
   const markAsRead = (id: string | number) => {
+    const readIds = getReadNotifications();
+    readIds.add(String(id));
+    saveReadNotifications(readIds);
+
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
@@ -81,6 +134,10 @@ const NotificationBell = () => {
   };
 
   const markAllAsRead = () => {
+    const readIds = getReadNotifications();
+    notifications.forEach((n) => readIds.add(String(n.id)));
+    saveReadNotifications(readIds);
+
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
   };
