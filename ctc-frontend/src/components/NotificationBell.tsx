@@ -49,7 +49,7 @@ const NotificationBell = () => {
 
       // Get previously read notifications for this user
       const readIds = getReadNotifications();
-      
+
       const userRole = (user as any)?.role;
 
       const notifs: Notification[] = apps.map((app: any, index: number) => {
@@ -83,7 +83,7 @@ const NotificationBell = () => {
         } else if (userRole === "faculty" || userRole === "alumni") {
           // Faculty/Alumni see applications TO their opportunities
           const studentName = app.student_name || "A student";
-          
+
           if (app.status === "pending") {
             type = "info";
             title = "New Application";

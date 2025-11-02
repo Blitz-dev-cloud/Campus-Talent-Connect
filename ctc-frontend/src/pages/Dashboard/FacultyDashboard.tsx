@@ -20,9 +20,11 @@ import {
   Clock,
   Users,
   FileText,
+  MessageCircle,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
+import ChatInterface from "../../components/ChatInterface";
 
 // Type definitions
 interface Profile {
@@ -88,6 +90,13 @@ const FacultyDashboard = () => {
     salary: "",
   });
   const [isPosting, setIsPosting] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [selectedChat, setSelectedChat] = useState<{
+    applicationId: string;
+    studentId: string;
+    studentName: string;
+    opportunityTitle: string;
+  } | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -127,11 +136,16 @@ const FacultyDashboard = () => {
       console.log("My opportunities:", oppRes.data);
       console.log("All applications:", appRes.data);
       // Get applications for faculty's opportunities
-      const myOpportunityIds = oppRes.data.map((opp: Opportunity) => opp._id || opp.id);
+      const myOpportunityIds = oppRes.data.map(
+        (opp: Opportunity) => opp._id || opp.id
+      );
       console.log("My opportunity IDs:", myOpportunityIds);
 
       const myApplications = appRes.data.filter((app: Application) => {
-        const appOppId = (app.opportunity as any)?._id || app.opportunity_id || app.opportunity;
+        const appOppId =
+          (app.opportunity as any)?._id ||
+          app.opportunity_id ||
+          app.opportunity;
         const matches = myOpportunityIds.includes(appOppId);
         console.log(
           `Application ${app._id || app.id} for opportunity ${appOppId}: ${
@@ -180,7 +194,9 @@ const FacultyDashboard = () => {
 
       setApplications(
         applications.map((app) =>
-          (app._id || app.id) === applicationId ? { ...app, status: newStatus } : app
+          (app._id || app.id) === applicationId
+            ? { ...app, status: newStatus }
+            : app
         )
       );
 
@@ -192,6 +208,22 @@ const FacultyDashboard = () => {
       toast.error("Failed to update application");
     }
   };
+
+  const openChat = (app: Application) => {
+    setSelectedChat({
+      applicationId: app._id || app.id,
+      studentId: app.student_id,
+      studentName: app.student_name || "Student",
+      opportunityTitle: app.opportunity_title || "Opportunity",
+    });
+    setChatOpen(true);
+  };
+
+  const closeChat = () => {
+    setChatOpen(false);
+    setSelectedChat(null);
+  };
+
   const viewResume = (resume_base64: string, resume_name: string) => {
     const pdfWindow = window.open("");
     if (pdfWindow) {
@@ -246,9 +278,12 @@ const FacultyDashboard = () => {
     } catch (error: any) {
       console.error("Save profile error:", error);
       console.error("Error response:", error.response?.data);
-      
+
       // If profile already exists, try to fetch and update it
-      if (error.response?.status === 400 && error.response?.data?.message?.includes("already exists")) {
+      if (
+        error.response?.status === 400 &&
+        error.response?.data?.message?.includes("already exists")
+      ) {
         try {
           // Fetch all profiles and find the user's profile
           const profilesRes = await api.get("/api/profiles");
@@ -258,7 +293,7 @@ const FacultyDashboard = () => {
               (p.user_id as any)?._id === user?.id ||
               p.user_id === user?.id
           );
-          
+
           if (existingProfile) {
             // Update the existing profile
             const updateRes = await api.put(
@@ -275,18 +310,18 @@ const FacultyDashboard = () => {
           console.error("Retry error:", retryError);
         }
       }
-      
+
       toast.error("Failed to update profile");
     }
   };
   const handlePostResearch = async (e) => {
     e.preventDefault();
-    
+
     if (!user?.id) {
       toast.error("Please login again");
       return;
     }
-    
+
     try {
       setIsPosting(true);
       const opportunityData = {
@@ -927,7 +962,10 @@ const FacultyDashboard = () => {
                             <div className="flex gap-3 pt-4 border-t border-gray-200">
                               <button
                                 onClick={() =>
-                                  handleApplicationAction(app._id || app.id, "accepted")
+                                  handleApplicationAction(
+                                    app._id || app.id,
+                                    "accepted"
+                                  )
                                 }
                                 className="flex-1 bg-green-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-green-700 transition-all flex items-center justify-center gap-2"
                               >
@@ -936,12 +974,26 @@ const FacultyDashboard = () => {
                               </button>
                               <button
                                 onClick={() =>
-                                  handleApplicationAction(app._id || app.id, "rejected")
+                                  handleApplicationAction(
+                                    app._id || app.id,
+                                    "rejected"
+                                  )
                                 }
                                 className="flex-1 bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition-all flex items-center justify-center gap-2"
                               >
                                 <XCircle size={18} />
                                 Reject Application
+                              </button>
+                            </div>
+                          )}
+                          {app.status === "accepted" && (
+                            <div className="pt-4 border-t border-gray-200">
+                              <button
+                                onClick={() => openChat(app)}
+                                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                              >
+                                <MessageCircle size={18} />
+                                Message Student
                               </button>
                             </div>
                           )}
@@ -962,6 +1014,17 @@ const FacultyDashboard = () => {
           </>
         )}
       </div>
+
+      {/* Chat Interface */}
+      {chatOpen && selectedChat && (
+        <ChatInterface
+          applicationId={selectedChat.applicationId}
+          receiverId={selectedChat.studentId}
+          receiverName={selectedChat.studentName}
+          opportunityTitle={selectedChat.opportunityTitle}
+          onClose={closeChat}
+        />
+      )}
     </div>
   );
 };

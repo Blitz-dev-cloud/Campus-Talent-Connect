@@ -17,9 +17,11 @@ import {
   FileText,
   CheckCircle,
   Send,
+  MessageCircle,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
+import ChatInterface from "../../components/ChatInterface";
 
 // Type definitions
 interface Profile {
@@ -95,6 +97,13 @@ const StudentDashboard = () => {
     tenth_percentage: "",
     twelfth_percentage: "",
   });
+  const [chatOpen, setChatOpen] = useState(false);
+  const [selectedChat, setSelectedChat] = useState<{
+    applicationId: string;
+    facultyId: string;
+    facultyName: string;
+    opportunityTitle: string;
+  } | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
@@ -244,6 +253,22 @@ const StudentDashboard = () => {
     });
     setIsApplyModalOpen(true);
   };
+
+  const openChat = (app: Application, opp: Opportunity) => {
+    setSelectedChat({
+      applicationId: app._id || app.id || "",
+      facultyId: opp.posted_by,
+      facultyName: (opp as any).posted_by_name || "Faculty/Alumni",
+      opportunityTitle: opp.title,
+    });
+    setChatOpen(true);
+  };
+
+  const closeChat = () => {
+    setChatOpen(false);
+    setSelectedChat(null);
+  };
+
   const handleApplicationInput = (
     field: keyof ApplicationForm,
     value: string
@@ -767,7 +792,7 @@ const StudentDashboard = () => {
                   <table className="w-full">
                     <thead className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white">
                       <tr>
-                        <th className="px-6 py-4 text-left font-semibold rounded-tl-xl">
+                        <th className="px-6 py-4 text-left font-semibold">
                           {" "}
                           Opportunity{" "}
                         </th>
@@ -775,9 +800,13 @@ const StudentDashboard = () => {
                           {" "}
                           Status{" "}
                         </th>
-                        <th className="px-6 py-4 text-left font-semibold rounded-tr-xl">
+                        <th className="px-6 py-4 text-left font-semibold">
                           {" "}
                           Date Applied{" "}
+                        </th>
+                        <th className="px-6 py-4 text-left font-semibold rounded-tr-xl">
+                          {" "}
+                          Actions{" "}
                         </th>
                       </tr>
                     </thead>
@@ -816,12 +845,30 @@ const StudentDashboard = () => {
                               ).toLocaleDateString()}{" "}
                               {new Date(app.created_at).toLocaleDateString()}{" "}
                             </td>
+                            <td className="px-6 py-4">
+                              {app.status === "accepted" && (
+                                <button
+                                  onClick={() => {
+                                    const opportunity = opportunities.find(
+                                      (o) => o._id === app.opportunity || o.id === app.opportunity
+                                    );
+                                    if (opportunity) {
+                                      openChat(app, opportunity);
+                                    }
+                                  }}
+                                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center gap-2"
+                                >
+                                  <MessageCircle size={16} />
+                                  Message
+                                </button>
+                              )}
+                            </td>
                           </motion.tr>
                         ))
                       ) : (
                         <tr>
                           <td
-                            colSpan={3}
+                            colSpan={4}
                             className="px-6 py-12 text-center text-gray-600"
                           >
                             <Briefcase
@@ -1009,6 +1056,17 @@ const StudentDashboard = () => {
             </div>
           </motion.div>
         </div>
+      )}
+
+      {/* Chat Interface */}
+      {chatOpen && selectedChat && (
+        <ChatInterface
+          applicationId={selectedChat.applicationId}
+          receiverId={selectedChat.facultyId}
+          receiverName={selectedChat.facultyName}
+          opportunityTitle={selectedChat.opportunityTitle}
+          onClose={closeChat}
+        />
       )}
     </div>
   );

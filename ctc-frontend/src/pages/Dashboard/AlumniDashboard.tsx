@@ -96,7 +96,10 @@ const AlumniDashboard = () => {
       const myOpportunityIds = oppRes.data.map((opp) => opp._id || opp.id);
       console.log("My opportunity IDs:", myOpportunityIds);
       const myApplications = appRes.data.filter((app) => {
-        const appOppId = (app.opportunity as any)?._id || app.opportunity_id || app.opportunity;
+        const appOppId =
+          (app.opportunity as any)?._id ||
+          app.opportunity_id ||
+          app.opportunity;
         const matches = myOpportunityIds.includes(appOppId);
         console.log(
           `Application ${app._id || app.id} for opportunity ${appOppId}: ${
@@ -138,7 +141,9 @@ const AlumniDashboard = () => {
 
       setApplications(
         applications.map((app) =>
-          (app._id || app.id) === applicationId ? { ...app, status: newStatus } : app
+          (app._id || app.id) === applicationId
+            ? { ...app, status: newStatus }
+            : app
         )
       );
 
@@ -202,9 +207,12 @@ const AlumniDashboard = () => {
     } catch (error: any) {
       console.error("Save profile error:", error);
       console.error("Error response:", error.response?.data);
-      
+
       // If profile already exists, try to fetch and update it
-      if (error.response?.status === 400 && error.response?.data?.message?.includes("already exists")) {
+      if (
+        error.response?.status === 400 &&
+        error.response?.data?.message?.includes("already exists")
+      ) {
         try {
           // Fetch all profiles and find the user's profile
           const profilesRes = await api.get("/api/profiles");
@@ -214,7 +222,7 @@ const AlumniDashboard = () => {
               (p.user_id as any)?._id === user?.id ||
               p.user_id === user?.id
           );
-          
+
           if (existingProfile) {
             // Update the existing profile
             const updateRes = await api.put(
@@ -231,18 +239,18 @@ const AlumniDashboard = () => {
           console.error("Retry error:", retryError);
         }
       }
-      
+
       toast.error("Failed to update profile");
     }
   };
   const handlePostOpportunity = async (e) => {
     e.preventDefault();
-    
+
     if (!user?.id) {
       toast.error("Please login again");
       return;
     }
-    
+
     try {
       setIsPosting(true);
       const opportunityData = {
@@ -882,7 +890,10 @@ const AlumniDashboard = () => {
                             <div className="flex gap-3 pt-4 border-t border-gray-200">
                               <button
                                 onClick={() =>
-                                  handleApplicationAction(app._id || app.id, "accepted")
+                                  handleApplicationAction(
+                                    app._id || app.id,
+                                    "accepted"
+                                  )
                                 }
                                 className="flex-1 bg-green-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-green-700 transition-all flex items-center justify-center gap-2"
                               >
@@ -891,7 +902,10 @@ const AlumniDashboard = () => {
                               </button>
                               <button
                                 onClick={() =>
-                                  handleApplicationAction(app._id || app.id, "rejected")
+                                  handleApplicationAction(
+                                    app._id || app.id,
+                                    "rejected"
+                                  )
                                 }
                                 className="flex-1 bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 transition-all flex items-center justify-center gap-2"
                               >
