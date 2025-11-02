@@ -23,6 +23,100 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
   const { user, logout, role } = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [showUserMenu, setShowUserMenu] = React.useState(false);
+  const [userName, setUserName] = React.useState<string>("");
+
+  // Fetch user's full name from profile
+  React.useEffect(() => {
+    const fetchUserName = async () => {
+      if (user) {
+        try {
+          // Try to get from user object first
+          if ((user as any)?.full_name) {
+            setUserName((user as any).full_name);
+            return;
+          }
+
+          // Try username from token
+          if ((user as any)?.username) {
+            setUserName((user as any).username);
+            return;
+          }
+
+          // Otherwise fetch from profile using the api helper
+          const response = await fetch(
+            `${
+              import.meta.env.VITE_API_URL || "http://localhost:8000"
+            }/api/profiles/`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const profiles = await response.json();
+            console.log("All profiles:", profiles);
+            console.log("Current user ID:", (user as any)?.id);
+
+            const userProfile = profiles.find((p: any) => {
+              const userId = (user as any)?.id;
+              // Check various ID formats
+              const profileUserId =
+                p.user_id_string ||
+                (typeof p.user_id === "object" ? p.user_id?._id : p.user_id);
+
+              console.log("Comparing:", profileUserId, "with", userId);
+              return profileUserId === userId;
+            });
+
+            console.log("Found profile:", userProfile);
+
+            if (userProfile?.full_name) {
+              setUserName(userProfile.full_name);
+            } else if ((user as any)?.email) {
+              // Extract name from email as last resort
+              const emailName = (user as any).email.split("@")[0].replace(/[._-]/g, ' ');
+              const words = emailName.split(' ');
+              const capitalizedName = words
+                .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+              setUserName(capitalizedName);
+            } else {
+              setUserName("User");
+            }
+          } else {
+            // Fallback to email-based name
+            if ((user as any)?.email) {
+              const emailName = (user as any).email.split("@")[0].replace(/[._-]/g, ' ');
+              const words = emailName.split(' ');
+              const capitalizedName = words
+                .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+              setUserName(capitalizedName);
+            } else {
+              setUserName("User");
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user name:", error);
+          // Try to use email as name
+          if ((user as any)?.email) {
+            const emailName = (user as any).email.split("@")[0].replace(/[._-]/g, ' ');
+            const words = emailName.split(' ');
+            const capitalizedName = words
+              .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+              .join(' ');
+            setUserName(capitalizedName);
+          } else {
+            setUserName("User");
+          }
+        }
+      }
+    };
+
+    fetchUserName();
+  }, [user]);
 
   // Lock body scroll when mobile menu is open
   React.useEffect(() => {
@@ -154,7 +248,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                       >
                         <div className="p-3 bg-gradient-to-r from-indigo-600 to-fuchsia-600">
                           <div className="text-white font-semibold text-sm">
-                            {(user as any)?.full_name || "User"}
+                            {userName || "User"}
                           </div>
                           <div className="text-white/80 text-xs">
                             {(user as any)?.email}
@@ -237,7 +331,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                       </div>
                       <div className="flex-1">
                         <div className="text-gray-900 font-bold text-sm">
-                          {(user as any)?.full_name || "User"}
+                          {userName || "User"}
                         </div>
                         <div className="text-gray-600 text-xs capitalize flex items-center gap-1">
                           <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>

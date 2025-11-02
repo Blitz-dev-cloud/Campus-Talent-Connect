@@ -586,7 +586,10 @@ const StudentDashboard = () => {
                                 whileTap={{ scale: 0.9 }}
                                 className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
                               >
-                                <Camera size={16} className="text-white sm:w-5 sm:h-5" />
+                                <Camera
+                                  size={16}
+                                  className="text-white sm:w-5 sm:h-5"
+                                />
                                 <input
                                   type="file"
                                   accept="image/*"
@@ -604,7 +607,10 @@ const StudentDashboard = () => {
                                 onClick={removeProfilePicture}
                                 className="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
                               >
-                                <X size={16} className="text-white sm:w-5 sm:h-5" />
+                                <X
+                                  size={16}
+                                  className="text-white sm:w-5 sm:h-5"
+                                />
                               </motion.button>
                             )}
                           </div>
@@ -935,14 +941,22 @@ const StudentDashboard = () => {
                             size={14}
                             className="text-indigo-600 flex-shrink-0 sm:w-4 sm:h-4"
                           />
-                          <span className="font-medium truncate">{opp.company}</span>
+                          <span className="font-medium truncate">
+                            {opp.company}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-700">
-                          <MapPin size={14} className="text-indigo-600 flex-shrink-0 sm:w-4 sm:h-4" />
+                          <MapPin
+                            size={14}
+                            className="text-indigo-600 flex-shrink-0 sm:w-4 sm:h-4"
+                          />
                           <span className="truncate">{opp.location}</span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-700">
-                          <Award size={14} className="text-indigo-600 flex-shrink-0 sm:w-4 sm:h-4" />
+                          <Award
+                            size={14}
+                            className="text-indigo-600 flex-shrink-0 sm:w-4 sm:h-4"
+                          />
                           <span className="font-semibold text-green-600">
                             ${opp.salary}
                           </span>
@@ -1045,11 +1059,12 @@ const StudentDashboard = () => {
                                           opportunityId = app.opportunity;
                                         }
 
-                                        const fullOpportunity = opportunities.find(
-                                          (o) =>
-                                            o._id === opportunityId ||
-                                            o.id === opportunityId
-                                        );
+                                        const fullOpportunity =
+                                          opportunities.find(
+                                            (o) =>
+                                              o._id === opportunityId ||
+                                              o.id === opportunityId
+                                          );
 
                                         if (fullOpportunity) {
                                           openChat(app, fullOpportunity);

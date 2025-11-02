@@ -23,6 +23,8 @@ import {
   MessageCircle,
   Camera,
   X,
+  UserCircle,
+  Clipboard,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
@@ -417,7 +419,64 @@ const AlumniDashboard = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 pb-4 sm:pb-0">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 pb-20 lg:pb-4">
+      {/* Mobile Bottom Navigation - Fixed at bottom */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-2xl">
+        <div className="grid grid-cols-4 gap-1 px-2 py-3">
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setActiveTab("profile")}
+            className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-all ${
+              activeTab === "profile"
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                : "text-gray-600"
+            }`}
+          >
+            <UserCircle size={20} />
+            <span className="text-xs font-semibold">Profile</span>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setActiveTab("create")}
+            className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-all ${
+              activeTab === "create"
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                : "text-gray-600"
+            }`}
+          >
+            <Plus size={20} />
+            <span className="text-xs font-semibold">Post</span>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setActiveTab("opportunities")}
+            className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-all ${
+              activeTab === "opportunities"
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                : "text-gray-600"
+            }`}
+          >
+            <Briefcase size={20} />
+            <span className="text-xs font-semibold">Jobs</span>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setActiveTab("applications")}
+            className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-all ${
+              activeTab === "applications"
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                : "text-gray-600"
+            }`}
+          >
+            <Clipboard size={20} />
+            <span className="text-xs font-semibold">Apps</span>
+          </motion.button>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent mb-2">
@@ -427,7 +486,9 @@ const AlumniDashboard = () => {
             Give back by sharing opportunities and mentoring students
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2 mb-6 sm:mb-8 bg-white rounded-xl p-2 shadow-lg border border-gray-100">
+
+        {/* Desktop Tabs - Hidden on Mobile */}
+        <div className="hidden lg:flex gap-2 mb-6 sm:mb-8 bg-white rounded-xl p-2 shadow-lg border border-gray-100">
           {["profile", "create", "opportunities", "applications"].map((tab) => (
             <button
               key={tab}

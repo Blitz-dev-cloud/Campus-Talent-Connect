@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext, useCallback } from "react";
 import { MessageCircle, Send, X, Sparkles, Star } from "lucide-react";
 import api from "../lib/api";
+import { AuthContext } from "../context/AuthContext";
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
 
@@ -86,15 +87,23 @@ const formatBotMessage = (text: string): React.ReactElement => {
 };
 
 const Chatbot = () => {
+  const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Load chat history from localStorage on mount
+  // Get user-specific storage key
+  const getChatStorageKey = useCallback(() => {
+    const userId = (user as any)?.id || "guest";
+    return `ctc_chat_history_${userId}`;
+  }, [user]);
+
+  // Load chat history from localStorage on mount or when user changes
   useEffect(() => {
-    const savedHistory = localStorage.getItem("ctc_chat_history");
+    const storageKey = getChatStorageKey();
+    const savedHistory = localStorage.getItem(storageKey);
     if (savedHistory) {
       try {
         const parsed = JSON.parse(savedHistory);
@@ -102,15 +111,19 @@ const Chatbot = () => {
       } catch (error) {
         console.error("Failed to load chat history:", error);
       }
+    } else {
+      // Clear messages if no history for this user
+      setMessages([]);
     }
-  }, []);
+  }, [getChatStorageKey]);
 
   // Save chat history to localStorage whenever messages change
   useEffect(() => {
+    const storageKey = getChatStorageKey();
     if (messages.length > 0) {
-      localStorage.setItem("ctc_chat_history", JSON.stringify(messages));
+      localStorage.setItem(storageKey, JSON.stringify(messages));
     }
-  }, [messages]);
+  }, [messages, getChatStorageKey]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -123,7 +136,8 @@ const Chatbot = () => {
   // Clear chat history
   const clearHistory = () => {
     setMessages([]);
-    localStorage.removeItem("ctc_chat_history");
+    const storageKey = getChatStorageKey();
+    localStorage.removeItem(storageKey);
   };
 
   // Fetch opportunities from database
@@ -312,7 +326,7 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
   return (
     <>
       {isOpen && (
-        <div className="fixed bottom-20 sm:bottom-24 right-3 sm:right-6 w-[calc(100vw-24px)] sm:w-96 h-[calc(100vh-120px)] sm:h-[600px] max-h-[600px] bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-200/50 flex flex-col overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-24 lg:bottom-24 right-3 sm:right-6 w-[calc(100vw-24px)] sm:w-96 h-[calc(100vh-200px)] sm:h-[600px] max-h-[600px] bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-200/50 flex flex-col overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
           <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-4 sm:p-5">
             <div className="absolute inset-0 bg-black/10"></div>
@@ -355,7 +369,10 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
             {messages.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-3 sm:space-y-4">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                  <MessageCircle size={28} className="text-white sm:w-8 sm:h-8" />
+                  <MessageCircle
+                    size={28}
+                    className="text-white sm:w-8 sm:h-8"
+                  />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">
@@ -394,7 +411,9 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
                   }`}
                 >
                   {msg.role === "user" ? (
-                    <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+                    <div className="whitespace-pre-wrap break-words">
+                      {msg.content}
+                    </div>
                   ) : (
                     formatBotMessage(msg.content)
                   )}
@@ -447,7 +466,7 @@ Be helpful, friendly, and guide users to make the most of Campus Talent Connect!
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all duration-300 hover:scale-110 active:scale-95 group z-40 overflow-hidden"
+        className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all duration-300 hover:scale-110 active:scale-95 group z-40 overflow-hidden"
       >
         <div className="group-hover:rotate-[360deg] transition-transform duration-700 ease-in-out">
           <Star size={28} className="fill-white stroke-none sm:w-8 sm:h-8" />

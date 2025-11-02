@@ -167,8 +167,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <h3 className="font-semibold text-sm sm:text-lg truncate">{receiverName}</h3>
-                <p className="text-xs sm:text-sm opacity-90 truncate">{opportunityTitle}</p>
+                <h3 className="font-semibold text-sm sm:text-lg truncate">
+                  {receiverName}
+                </h3>
+                <p className="text-xs sm:text-sm opacity-90 truncate">
+                  {opportunityTitle}
+                </p>
               </div>
             </div>
             <button
@@ -281,7 +285,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
               className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center gap-2 text-sm sm:text-base"
             >
               <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="hidden sm:inline">{isSending ? "Sending..." : "Send"}</span>
+              <span className="hidden sm:inline">
+                {isSending ? "Sending..." : "Send"}
+              </span>
               <span className="sm:hidden">{isSending ? "..." : ""}</span>
             </button>
           </div>
