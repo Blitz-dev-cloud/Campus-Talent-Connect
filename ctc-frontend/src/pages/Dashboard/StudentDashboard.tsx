@@ -443,18 +443,18 @@ const StudentDashboard = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 pb-4 sm:pb-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
             Student Dashboard
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
             Manage your profile, explore opportunities, and track applications
           </p>
         </motion.div>
@@ -464,13 +464,13 @@ const StudentDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex gap-3 mb-8 bg-white/80 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-white/20"
+          className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-6 sm:mb-8 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-2 shadow-lg border border-white/20"
         >
           {["profile", "opportunities", "applications"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 px-6 py-4 font-semibold rounded-xl transition-all duration-300 ${
+              className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-semibold rounded-lg sm:rounded-xl transition-all duration-300 text-sm sm:text-base ${
                 activeTab === tab
                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg scale-105"
                   : "text-gray-700 hover:bg-gray-100 hover:scale-102"

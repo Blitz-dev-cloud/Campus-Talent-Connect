@@ -417,25 +417,25 @@ const AlumniDashboard = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 pb-4 sm:pb-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent mb-2">
             Alumni Dashboard
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
             Give back by sharing opportunities and mentoring students
           </p>
         </div>
-        <div className="flex gap-2 mb-8 bg-white rounded-xl p-2 shadow-sm flex-wrap">
+        <div className="flex flex-col sm:flex-row gap-2 mb-6 sm:mb-8 bg-white rounded-xl p-2 shadow-lg border border-gray-100">
           {["profile", "create", "opportunities", "applications"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 min-w-[120px] px-6 py-3 font-semibold rounded-lg transition-all ${
+              className={`flex-1 min-w-0 sm:min-w-[120px] px-4 sm:px-6 py-3 font-semibold rounded-lg transition-all text-sm sm:text-base ${
                 activeTab === tab
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 text-white shadow-lg scale-105"
+                  : "text-gray-600 hover:bg-gray-50 hover:scale-102"
               }`}
             >
               {tab === "create"

@@ -48,23 +48,35 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
     : [];
 
   return (
-    <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-200">
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 sm:h-20">
           {/* Logo */}
           <div
             onClick={() => navigate(user ? `/dashboard/${role}` : "/")}
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all group-hover:scale-105">
-              <span className="text-white font-bold text-sm">CTC</span>
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-bold text-lg bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
-                Campus Talent Connect
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all"
+            >
+              <span className="text-white font-bold text-sm sm:text-base">
+                CTC
               </span>
-              <div className="text-xs text-gray-500">
+            </motion.div>
+            <div className="hidden sm:block">
+              <div className="font-bold text-base sm:text-lg bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
+                Campus Talent Connect
+              </div>
+              <div className="text-xs text-gray-500 font-medium">
                 Empowering Your Future
+              </div>
+            </div>
+            {/* Mobile - Show abbreviated text */}
+            <div className="sm:hidden">
+              <div className="font-bold text-sm bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
+                CTC
               </div>
             </div>
           </div>
@@ -84,21 +96,28 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
           </div>
 
           {/* Desktop Auth Section */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3 lg:gap-4">
             {!user ? (
               <>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/auth/login")}
-                  className="px-5 py-2 text-sm font-semibold text-gray-700 hover:text-fuchsia-600 transition-colors"
+                  className="px-4 lg:px-5 py-2 text-sm font-semibold text-gray-700 hover:text-fuchsia-600 transition-colors"
                 >
                   Login
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0 20px 25px -5px rgba(192, 38, 211, 0.3)",
+                  }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/auth/register")}
-                  className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white rounded-lg hover:shadow-lg hover:shadow-fuchsia-500/50 transition-all transform hover:scale-105 font-semibold text-sm"
+                  className="px-4 lg:px-6 py-2.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 text-white rounded-xl hover:shadow-xl transition-all font-semibold text-sm"
                 >
                   Get Started
-                </button>
+                </motion.button>
               </>
             ) : (
               <>
@@ -107,21 +126,23 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
 
                 {/* User Menu */}
                 <div className="relative">
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-all border border-gray-200"
+                    className="flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-all border border-gray-200 shadow-sm"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-fuchsia-600 rounded-full flex items-center justify-center">
-                      <User size={16} className="text-white" />
+                    <div className="w-8 h-8 lg:w-9 lg:h-9 bg-gradient-to-br from-indigo-600 to-fuchsia-600 rounded-full flex items-center justify-center shadow-md">
+                      <User size={18} className="text-white" />
                     </div>
-                    <span className="capitalize">{role}</span>
+                    <span className="capitalize hidden lg:inline">{role}</span>
                     <ChevronDown
                       size={16}
                       className={`transition-transform ${
                         showUserMenu ? "rotate-180" : ""
                       }`}
                     />
-                  </button>
+                  </motion.button>
 
                   <AnimatePresence>
                     {showUserMenu && (
@@ -181,13 +202,17 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-gray-600 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-lg transition-all"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="flex md:hidden items-center gap-2">
+            {user && <NotificationBell />}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 text-gray-600 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-xl transition-all"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </motion.button>
+          </div>
         </div>
       </div>
 
