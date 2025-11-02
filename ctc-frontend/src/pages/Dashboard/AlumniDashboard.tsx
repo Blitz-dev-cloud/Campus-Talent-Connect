@@ -72,7 +72,7 @@ const AlumniDashboard = () => {
     if (!user) return;
     try {
       setIsLoading(true);
-      
+
       // Fetch user's own profile first
       let userProfile = null;
       try {
@@ -81,7 +81,7 @@ const AlumniDashboard = () => {
       } catch (error) {
         console.log("No profile found");
       }
-      
+
       setProfile(userProfile);
       setEditedProfile(
         userProfile || {
@@ -104,7 +104,7 @@ const AlumniDashboard = () => {
       ]);
 
       setOpportunities(oppRes.data);
-      
+
       // Get applications for alumni's opportunities
       const myOpportunityIds = oppRes.data.map((opp) => opp._id || opp.id);
       const myApplications = appRes.data.filter((app) => {

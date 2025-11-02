@@ -130,13 +130,13 @@ const StudentDashboard = () => {
   } | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       if (!user) return;
       try {
         setIsLoading(true);
-        
+
         // Fetch only the current user's profile (much faster)
         let userProfile = null;
         try {
@@ -164,7 +164,7 @@ const StudentDashboard = () => {
             role: (user as any)?.role,
           }
         );
-        
+
         // Fetch opportunities and applications in parallel
         const [oppRes, appRes] = await Promise.all([
           api.get("/api/opportunities"),

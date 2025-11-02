@@ -105,7 +105,7 @@ const FacultyDashboard = () => {
     if (!user) return;
     try {
       setIsLoading(true);
-      
+
       // Fetch user's own profile first (fastest)
       let userProfile = null;
       try {
@@ -114,7 +114,7 @@ const FacultyDashboard = () => {
       } catch (error) {
         console.log("No profile found");
       }
-      
+
       setProfile(userProfile);
       setEditedProfile(
         userProfile || {
@@ -127,7 +127,7 @@ const FacultyDashboard = () => {
           role: user?.role || "faculty",
         }
       );
-      
+
       // Fetch other data in parallel
       const [oppRes, appRes, usersRes, profilesRes] = await Promise.all([
         api.get("/api/opportunities/my-opportunities"),
@@ -137,7 +137,7 @@ const FacultyDashboard = () => {
       ]);
 
       setOpportunities(oppRes.data);
-      
+
       // Get applications for faculty's opportunities
       const myOpportunityIds = oppRes.data.map(
         (opp: Opportunity) => opp._id || opp.id

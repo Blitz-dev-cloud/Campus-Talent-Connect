@@ -22,26 +22,29 @@ router.get("/me", auth, async (req, res) => {
     console.log("=== GET /api/profiles/me ===");
     console.log("Authenticated user ID from token:", req.user.id);
     console.log("Full user object from token:", req.user);
-    
+
     const profile = await Profile.findOne({ user_id: req.user.id }).populate(
       "user_id",
       "email full_name role"
     );
-    
+
     console.log("Profile found:", profile ? "YES" : "NO");
     if (profile) {
       console.log("Profile._id:", profile._id);
       console.log("Profile.user_id:", profile.user_id);
     }
-    
+
     // Also check if there's a profile with a string version of the ID
     if (!profile) {
       console.log("Trying to find profile with different ID format...");
       const allProfiles = await Profile.find();
       console.log("Total profiles in DB:", allProfiles.length);
-      console.log("All user_ids in DB:", allProfiles.map(p => ({ id: p.user_id, type: typeof p.user_id })));
+      console.log(
+        "All user_ids in DB:",
+        allProfiles.map((p) => ({ id: p.user_id, type: typeof p.user_id }))
+      );
     }
-    
+
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
     }
@@ -71,7 +74,12 @@ router.post("/", auth, async (req, res) => {
     console.log("=== POST /api/profiles (CREATE) ===");
     console.log("Creating profile with body:", req.body);
     console.log("User from auth token:", req.user);
-    console.log("req.body.user_id:", req.body.user_id, "Type:", typeof req.body.user_id);
+    console.log(
+      "req.body.user_id:",
+      req.body.user_id,
+      "Type:",
+      typeof req.body.user_id
+    );
     console.log("req.user.id:", req.user.id, "Type:", typeof req.user.id);
 
     const userIdToUse = req.body.user_id || req.user.id;
@@ -93,7 +101,12 @@ router.post("/", auth, async (req, res) => {
     });
     console.log("Profile created successfully!");
     console.log("Created profile._id:", profile._id);
-    console.log("Created profile.user_id:", profile.user_id, "Type:", typeof profile.user_id);
+    console.log(
+      "Created profile.user_id:",
+      profile.user_id,
+      "Type:",
+      typeof profile.user_id
+    );
     res.status(201).json(profile);
   } catch (err) {
     console.error("Profile creation error:", err);
@@ -107,7 +120,7 @@ router.put("/:id", auth, async (req, res) => {
     console.log("=== PUT /api/profiles/:id (UPDATE) ===");
     console.log("Profile ID to update:", req.params.id);
     console.log("User from auth token:", req.user.id);
-    
+
     const profile = await Profile.findById(req.params.id);
 
     if (!profile) {
@@ -115,8 +128,18 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(404).json({ message: "Profile not found" });
     }
 
-    console.log("Found profile.user_id:", profile.user_id, "Type:", typeof profile.user_id);
-    console.log("Comparing with req.user.id:", req.user.id, "Type:", typeof req.user.id);
+    console.log(
+      "Found profile.user_id:",
+      profile.user_id,
+      "Type:",
+      typeof profile.user_id
+    );
+    console.log(
+      "Comparing with req.user.id:",
+      req.user.id,
+      "Type:",
+      typeof req.user.id
+    );
 
     // Check if user owns this profile
     if (profile.user_id.toString() !== req.user.id) {

@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with true to check token first
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -47,6 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.removeItem("access_token");
       }
     }
+    setIsLoading(false); // Done checking token
   }, []);
 
   const login = async (email: string, password: string): Promise<User> => {

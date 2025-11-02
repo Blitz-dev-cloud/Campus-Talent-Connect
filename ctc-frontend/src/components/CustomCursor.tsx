@@ -6,16 +6,18 @@ const CustomCursor = () => {
   const [isPointer, setIsPointer] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
+  const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>(
+    []
+  );
 
   useEffect(() => {
     // Check if device supports touch
     const checkTouchDevice = () => {
       setIsTouchDevice(
         "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0 ||
-        // @ts-ignore
-        navigator.msMaxTouchPoints > 0
+          navigator.maxTouchPoints > 0 ||
+          // @ts-ignore
+          navigator.msMaxTouchPoints > 0
       );
     };
 
@@ -24,11 +26,11 @@ const CustomCursor = () => {
     let trailId = 0;
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
-      
+
       // Add trail effect
       setTrail((prev) => [
         ...prev.slice(-8), // Keep last 8 trail points
-        { x: e.clientX, y: e.clientY, id: trailId++ }
+        { x: e.clientX, y: e.clientY, id: trailId++ },
       ]);
     };
 
@@ -85,7 +87,9 @@ const CustomCursor = () => {
             width: "8px",
             height: "8px",
             borderRadius: "50%",
-            background: `linear-gradient(135deg, rgba(99, 102, 241, ${0.3 - index * 0.03}), rgba(168, 85, 247, ${0.3 - index * 0.03}))`,
+            background: `linear-gradient(135deg, rgba(99, 102, 241, ${
+              0.3 - index * 0.03
+            }), rgba(168, 85, 247, ${0.3 - index * 0.03}))`,
             pointerEvents: "none",
             zIndex: 9997,
           }}
@@ -110,8 +114,10 @@ const CustomCursor = () => {
           width: "12px",
           height: "12px",
           borderRadius: "50%",
-          background: "linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%)",
-          boxShadow: "0 0 20px rgba(99, 102, 241, 0.6), 0 0 40px rgba(168, 85, 247, 0.4)",
+          background:
+            "linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%)",
+          boxShadow:
+            "0 0 20px rgba(99, 102, 241, 0.6), 0 0 40px rgba(168, 85, 247, 0.4)",
           pointerEvents: "none",
           zIndex: 9999,
         }}
@@ -130,7 +136,7 @@ const CustomCursor = () => {
           type: "spring",
           stiffness: 200,
           damping: 20,
-          rotate: { duration: 0.6 }
+          rotate: { duration: 0.6 },
         }}
         style={{
           position: "fixed",
@@ -138,7 +144,8 @@ const CustomCursor = () => {
           height: "48px",
           borderRadius: "50%",
           border: "2px solid transparent",
-          background: "linear-gradient(white, white) padding-box, linear-gradient(135deg, #6366f1, #a855f7, #ec4899) border-box",
+          background:
+            "linear-gradient(white, white) padding-box, linear-gradient(135deg, #6366f1, #a855f7, #ec4899) border-box",
           opacity: 0.5,
           pointerEvents: "none",
           zIndex: 9998,
@@ -164,7 +171,8 @@ const CustomCursor = () => {
           width: "64px",
           height: "64px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%)",
+          background:
+            "radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%)",
           pointerEvents: "none",
           zIndex: 9997,
           filter: "blur(8px)",
