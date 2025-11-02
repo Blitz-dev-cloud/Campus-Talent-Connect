@@ -457,18 +457,18 @@ const AlumniDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-3xl shadow-2xl overflow-hidden"
+                className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
               >
-                <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-fuchsia-600 p-10 text-white relative overflow-hidden">
+                <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-fuchsia-600 p-6 sm:p-8 lg:p-10 text-white relative overflow-hidden">
                   {/* Decorative background elements */}
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-pink-500/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
+                  <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                  <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-48 sm:h-48 bg-pink-500/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
 
-                  <div className="flex justify-between items-start relative z-10">
-                    <div className="flex items-center gap-6">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 relative z-10">
+                    <div className="flex items-center gap-4 sm:gap-6">
                       {/* Profile Picture */}
-                      <div className="relative group">
-                        <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/30 bg-white/20 backdrop-blur-sm shadow-xl">
+                      <div className="relative group flex-shrink-0">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl sm:rounded-2xl overflow-hidden border-4 border-white/30 bg-white/20 backdrop-blur-sm shadow-xl">
                           {editedProfile.profile_picture ||
                           profile?.profile_picture ? (
                             <img

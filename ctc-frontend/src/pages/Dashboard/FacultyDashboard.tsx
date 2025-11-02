@@ -529,21 +529,21 @@ const FacultyDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-green-100/50"
+                className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-green-100/50"
               >
                 {/* Profile Header */}
-                <div className="bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 p-10 text-white relative">
+                <div className="bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 p-6 sm:p-8 lg:p-10 text-white relative">
                   {/* Decorative elements */}
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-teal-500/20 rounded-full blur-2xl -ml-24 -mb-24"></div>
+                  <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl -mr-24 sm:-mr-32 -mt-24 sm:-mt-32"></div>
+                  <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-48 sm:h-48 bg-teal-500/20 rounded-full blur-2xl -ml-16 sm:-ml-24 -mb-16 sm:-mb-24"></div>
 
-                  <div className="flex justify-between items-start relative z-10">
-                    <div className="flex items-center gap-6">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 relative z-10">
+                    <div className="flex items-center gap-4 sm:gap-6">
                       {/* Profile Picture */}
-                      <div className="relative group">
+                      <div className="relative group flex-shrink-0">
                         <motion.div
                           whileHover={{ scale: 1.05 }}
-                          className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/30 shadow-2xl bg-white/20 backdrop-blur-md"
+                          className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl sm:rounded-2xl overflow-hidden border-4 border-white/30 shadow-2xl bg-white/20 backdrop-blur-md"
                         >
                           {editedProfile.profile_picture ||
                           profile?.profile_picture ? (

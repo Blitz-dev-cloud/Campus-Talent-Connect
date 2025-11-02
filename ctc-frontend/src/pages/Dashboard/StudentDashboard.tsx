@@ -20,6 +20,8 @@ import {
   MessageCircle,
   Camera,
   Upload,
+  UserCircle,
+  Clipboard,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../lib/api";
@@ -443,7 +445,51 @@ const StudentDashboard = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 pb-4 sm:pb-0">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 pb-20 lg:pb-4">
+      {/* Mobile Bottom Navigation - Fixed at bottom */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-2xl">
+        <div className="flex items-center justify-around px-2 py-3">
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setActiveTab("profile")}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
+              activeTab === "profile"
+                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                : "text-gray-600"
+            }`}
+          >
+            <UserCircle size={20} />
+            <span className="text-xs font-semibold">Profile</span>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setActiveTab("opportunities")}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
+              activeTab === "opportunities"
+                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                : "text-gray-600"
+            }`}
+          >
+            <Briefcase size={20} />
+            <span className="text-xs font-semibold">Opportunities</span>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setActiveTab("applications")}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
+              activeTab === "applications"
+                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                : "text-gray-600"
+            }`}
+          >
+            <Clipboard size={20} />
+            <span className="text-xs font-semibold">Applications</span>
+          </motion.button>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {/* Header */}
         <motion.div
@@ -459,12 +505,12 @@ const StudentDashboard = () => {
           </p>
         </motion.div>
 
-        {/* Tabs */}
+        {/* Desktop Tabs - Hidden on Mobile */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-6 sm:mb-8 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-2 shadow-lg border border-white/20"
+          className="hidden lg:flex gap-2 sm:gap-3 mb-6 sm:mb-8 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-2 shadow-lg border border-white/20"
         >
           {["profile", "opportunities", "applications"].map((tab) => (
             <button
@@ -495,21 +541,21 @@ const StudentDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-purple-100/50"
+                className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-purple-100/50"
               >
                 {/* Profile Header */}
-                <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-10 text-white relative">
+                <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-6 sm:p-8 lg:p-10 text-white relative">
                   {/* Decorative elements */}
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/20 rounded-full blur-2xl -ml-24 -mb-24"></div>
+                  <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl -mr-24 sm:-mr-32 -mt-24 sm:-mt-32"></div>
+                  <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-48 sm:h-48 bg-purple-500/20 rounded-full blur-2xl -ml-16 sm:-ml-24 -mb-16 sm:-mb-24"></div>
 
-                  <div className="flex justify-between items-start relative z-10">
-                    <div className="flex items-center gap-6">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 relative z-10">
+                    <div className="flex items-center gap-4 sm:gap-6">
                       {/* Profile Picture */}
-                      <div className="relative group">
+                      <div className="relative group flex-shrink-0">
                         <motion.div
                           whileHover={{ scale: 1.05 }}
-                          className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/30 shadow-2xl bg-white/20 backdrop-blur-md"
+                          className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl sm:rounded-2xl overflow-hidden border-4 border-white/30 shadow-2xl bg-white/20 backdrop-blur-md"
                         >
                           {editedProfile.profile_picture ||
                           profile?.profile_picture ? (
@@ -524,8 +570,8 @@ const StudentDashboard = () => {
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <User
-                                size={48}
-                                className="text-white drop-shadow-lg"
+                                size={40}
+                                className="text-white drop-shadow-lg sm:w-12 sm:h-12"
                               />
                             </div>
                           )}
@@ -533,14 +579,14 @@ const StudentDashboard = () => {
 
                         {/* Upload/Remove buttons - only show when editing */}
                         {isEditing && (
-                          <div className="absolute -bottom-2 -right-2 flex gap-2">
+                          <div className="absolute -bottom-2 -right-2 flex gap-1.5 sm:gap-2">
                             <label className="cursor-pointer">
                               <motion.div
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
-                                className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
+                                className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
                               >
-                                <Camera size={20} className="text-white" />
+                                <Camera size={16} className="text-white sm:w-5 sm:h-5" />
                                 <input
                                   type="file"
                                   accept="image/*"
@@ -556,26 +602,26 @@ const StudentDashboard = () => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={removeProfilePicture}
-                                className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+                                className="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
                               >
-                                <X size={20} className="text-white" />
+                                <X size={16} className="text-white sm:w-5 sm:h-5" />
                               </motion.button>
                             )}
                           </div>
                         )}
                       </div>
 
-                      <div>
-                        <h2 className="text-4xl font-black drop-shadow-lg mb-2">
+                      <div className="min-w-0">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black drop-shadow-lg mb-1 sm:mb-2 truncate">
                           {profile?.full_name ||
                             (user as any)?.full_name ||
                             (user as any)?.username ||
                             "Your Name"}
                         </h2>
-                        <p className="text-white/95 text-lg font-medium">
+                        <p className="text-white/95 text-sm sm:text-base lg:text-lg font-medium truncate">
                           {(user as any)?.email}
                         </p>
-                        <p className="text-white/80 text-sm capitalize mt-2 bg-white/25 inline-block px-4 py-1.5 rounded-full font-semibold backdrop-blur-sm">
+                        <p className="text-white/80 text-xs sm:text-sm capitalize mt-2 bg-white/25 inline-block px-3 py-1 sm:px-4 sm:py-1.5 rounded-full font-semibold backdrop-blur-sm">
                           {(user as any)?.role || "Student"}
                         </p>
                       </div>
@@ -584,7 +630,7 @@ const StudentDashboard = () => {
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={isEditing ? saveProfile : handleEditToggle}
-                      className="px-8 py-3.5 bg-white text-indigo-600 rounded-xl font-bold hover:shadow-2xl transition-all flex items-center gap-2 shadow-xl border-2 border-white/50"
+                      className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-white text-indigo-600 rounded-xl font-bold hover:shadow-2xl transition-all flex items-center justify-center gap-2 shadow-xl border-2 border-white/50 text-sm sm:text-base"
                     >
                       {isEditing ? (
                         <>
@@ -599,11 +645,11 @@ const StudentDashboard = () => {
                   </div>
                 </div>
                 {/* Profile Content */}
-                <div className="p-8 bg-white/60 backdrop-blur-sm">
+                <div className="p-4 sm:p-6 lg:p-8 bg-white/60 backdrop-blur-sm">
                   {profile?._id || isEditing ? (
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                       {/* Basic Info */}
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         {/* Full Name */}
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
@@ -860,7 +906,7 @@ const StudentDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
               >
                 {opportunities.length > 0 ? (
                   opportunities.map((opp: Opportunity, idx: number) => (
@@ -870,39 +916,33 @@ const StudentDashboard = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: idx * 0.1 }}
                       whileHover={{ y: -8, scale: 1.02 }}
-                      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all border border-indigo-100 hover:border-indigo-300"
+                      className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 hover:shadow-2xl transition-all border border-indigo-100 hover:border-indigo-300"
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <h3 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                          {" "}
-                          {opp.title}{" "}
+                      <div className="flex items-start justify-between mb-3 sm:mb-4 gap-2">
+                        <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent line-clamp-2">
+                          {opp.title}
                         </h3>
-                        <span className="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full text-xs font-semibold shadow-md">
-                          {" "}
-                          {opp.type}{" "}
+                        <span className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full text-xs font-semibold shadow-md whitespace-nowrap flex-shrink-0">
+                          {opp.type}
                         </span>
                       </div>
-                      <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-                        {" "}
-                        {opp.description}{" "}
+                      <p className="text-gray-600 mb-3 sm:mb-4 line-clamp-2 text-sm sm:text-base leading-relaxed">
+                        {opp.description}
                       </p>
-                      <div className="space-y-2 mb-6 text-sm">
+                      <div className="space-y-2 mb-4 sm:mb-6 text-xs sm:text-sm">
                         <div className="flex items-center gap-2 text-gray-700">
-                          {" "}
                           <Briefcase
-                            size={16}
-                            className="text-indigo-600"
-                          />{" "}
-                          <span className="font-medium">{opp.company}</span>
+                            size={14}
+                            className="text-indigo-600 flex-shrink-0 sm:w-4 sm:h-4"
+                          />
+                          <span className="font-medium truncate">{opp.company}</span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-700">
-                          {" "}
-                          <MapPin size={16} className="text-indigo-600" />{" "}
-                          {opp.location}{" "}
+                          <MapPin size={14} className="text-indigo-600 flex-shrink-0 sm:w-4 sm:h-4" />
+                          <span className="truncate">{opp.location}</span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-700">
-                          {" "}
-                          <Award size={16} className="text-indigo-600" />{" "}
+                          <Award size={14} className="text-indigo-600 flex-shrink-0 sm:w-4 sm:h-4" />
                           <span className="font-semibold text-green-600">
                             ${opp.salary}
                           </span>
@@ -912,10 +952,9 @@ const StudentDashboard = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => openApplyModal(opp)}
-                        className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold py-3 rounded-xl hover:shadow-xl transition-all"
+                        className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold py-2.5 sm:py-3 rounded-xl hover:shadow-xl transition-all text-sm sm:text-base"
                       >
-                        {" "}
-                        Apply Now{" "}
+                        Apply Now
                       </motion.button>
                     </motion.div>
                   ))
@@ -938,147 +977,187 @@ const StudentDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden"
+                className="space-y-4"
               >
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white">
-                      <tr>
-                        <th className="px-6 py-4 text-left font-semibold">
-                          {" "}
-                          Opportunity{" "}
-                        </th>
-                        <th className="px-6 py-4 text-left font-semibold">
-                          {" "}
-                          Status{" "}
-                        </th>
-                        <th className="px-6 py-4 text-left font-semibold">
-                          {" "}
-                          Date Applied{" "}
-                        </th>
-                        <th className="px-6 py-4 text-left font-semibold rounded-tr-xl">
-                          {" "}
-                          Actions{" "}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white/80 backdrop-blur-sm">
-                      {applications.length > 0 ? (
-                        applications.map((app: any, idx: number) => (
-                          <motion.tr
-                            key={app.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="border-t border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all"
-                          >
-                            <td className="px-6 py-4 font-semibold text-gray-800">
-                              {" "}
-                              {app.opportunity_title || "N/A"}{" "}
-                            </td>
-                            <td className="px-6 py-4">
-                              <span
-                                className={`px-4 py-2 rounded-full text-sm font-bold shadow-md ${
-                                  app.status === "accepted"
-                                    ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
-                                    : app.status === "rejected"
-                                    ? "bg-gradient-to-r from-red-400 to-rose-500 text-white"
-                                    : "bg-gradient-to-r from-yellow-400 to-amber-500 text-white"
-                                }`}
+                {applications.length > 0 ? (
+                  <>
+                    {/* Desktop Table View */}
+                    <div className="hidden lg:block bg-white rounded-2xl shadow-xl overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white">
+                            <tr>
+                              <th className="px-6 py-4 text-left font-semibold">
+                                Opportunity
+                              </th>
+                              <th className="px-6 py-4 text-left font-semibold">
+                                Status
+                              </th>
+                              <th className="px-6 py-4 text-left font-semibold">
+                                Date Applied
+                              </th>
+                              <th className="px-6 py-4 text-left font-semibold rounded-tr-xl">
+                                Actions
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white/80 backdrop-blur-sm">
+                            {applications.map((app: any, idx: number) => (
+                              <motion.tr
+                                key={app.id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="border-t border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all"
                               >
-                                {" "}
-                                {app.status}{" "}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 text-gray-700 font-medium">
-                              {" "}
-                              {new Date(
-                                app.created_at || app.applied_date
-                              ).toLocaleDateString()}{" "}
-                              {new Date(app.created_at).toLocaleDateString()}{" "}
-                            </td>
-                            <td className="px-6 py-4">
-                              {app.status === "accepted" && (
-                                <button
-                                  onClick={() => {
-                                    console.log(
-                                      "Message button clicked for app:",
-                                      app
-                                    );
-                                    console.log(
-                                      "app.opportunity:",
-                                      app.opportunity
-                                    );
+                                <td className="px-6 py-4 font-semibold text-gray-800">
+                                  {app.opportunity_title || "N/A"}
+                                </td>
+                                <td className="px-6 py-4">
+                                  <span
+                                    className={`px-4 py-2 rounded-full text-sm font-bold shadow-md ${
+                                      app.status === "accepted"
+                                        ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
+                                        : app.status === "rejected"
+                                        ? "bg-gradient-to-r from-red-400 to-rose-500 text-white"
+                                        : "bg-gradient-to-r from-yellow-400 to-amber-500 text-white"
+                                    }`}
+                                  >
+                                    {app.status}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 text-gray-700 font-medium">
+                                  {new Date(
+                                    app.created_at || app.applied_date
+                                  ).toLocaleDateString()}
+                                </td>
+                                <td className="px-6 py-4">
+                                  {app.status === "accepted" && (
+                                    <button
+                                      onClick={() => {
+                                        let opportunityId = "";
+                                        if (
+                                          typeof app.opportunity === "object" &&
+                                          app.opportunity !== null
+                                        ) {
+                                          opportunityId = app.opportunity._id;
+                                        } else {
+                                          opportunityId = app.opportunity;
+                                        }
 
-                                    // Get the opportunity ID from the populated object or string
-                                    let opportunityId = "";
-                                    if (
-                                      typeof app.opportunity === "object" &&
-                                      app.opportunity !== null
-                                    ) {
-                                      opportunityId = app.opportunity._id;
-                                    } else {
-                                      opportunityId = app.opportunity;
-                                    }
+                                        const fullOpportunity = opportunities.find(
+                                          (o) =>
+                                            o._id === opportunityId ||
+                                            o.id === opportunityId
+                                        );
 
-                                    console.log(
-                                      "Looking for opportunity ID:",
-                                      opportunityId
-                                    );
+                                        if (fullOpportunity) {
+                                          openChat(app, fullOpportunity);
+                                        } else {
+                                          toast.error(
+                                            "Unable to open chat - opportunity not found"
+                                          );
+                                        }
+                                      }}
+                                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center gap-2"
+                                    >
+                                      <MessageCircle size={16} />
+                                      Message
+                                    </button>
+                                  )}
+                                </td>
+                              </motion.tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
 
-                                    // Find the full opportunity from the opportunities list
-                                    const fullOpportunity = opportunities.find(
-                                      (o) =>
-                                        o._id === opportunityId ||
-                                        o.id === opportunityId
-                                    );
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden space-y-3">
+                      {applications.map((app: any, idx: number) => (
+                        <motion.div
+                          key={app.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className="bg-white rounded-xl shadow-lg p-4 border border-gray-200"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold text-gray-800 text-base mb-1 truncate">
+                                {app.opportunity_title || "N/A"}
+                              </h3>
+                              <p className="text-xs text-gray-500">
+                                {new Date(
+                                  app.created_at || app.applied_date
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-bold shadow-md flex-shrink-0 ml-2 ${
+                                app.status === "accepted"
+                                  ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
+                                  : app.status === "rejected"
+                                  ? "bg-gradient-to-r from-red-400 to-rose-500 text-white"
+                                  : "bg-gradient-to-r from-yellow-400 to-amber-500 text-white"
+                              }`}
+                            >
+                              {app.status}
+                            </span>
+                          </div>
 
-                                    if (fullOpportunity) {
-                                      console.log(
-                                        "Found full opportunity:",
-                                        fullOpportunity
-                                      );
-                                      openChat(app, fullOpportunity);
-                                    } else {
-                                      console.error(
-                                        "Opportunity not found in opportunities list!"
-                                      );
-                                      toast.error(
-                                        "Unable to open chat - opportunity not found"
-                                      );
-                                    }
-                                  }}
-                                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center gap-2"
-                                >
-                                  <MessageCircle size={16} />
-                                  Message
-                                </button>
-                              )}
-                            </td>
-                          </motion.tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td
-                            colSpan={4}
-                            className="px-6 py-12 text-center text-gray-600"
-                          >
-                            <Briefcase
-                              size={48}
-                              className="mx-auto text-gray-400 mb-4"
-                            />{" "}
-                            <p className="text-lg font-medium">
-                              No applications yet.
-                            </p>
-                            <p className="text-sm text-gray-500 mt-2">
-                              Start applying to opportunities!
-                            </p>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                          {app.status === "accepted" && (
+                            <button
+                              onClick={() => {
+                                let opportunityId = "";
+                                if (
+                                  typeof app.opportunity === "object" &&
+                                  app.opportunity !== null
+                                ) {
+                                  opportunityId = app.opportunity._id;
+                                } else {
+                                  opportunityId = app.opportunity;
+                                }
+
+                                const fullOpportunity = opportunities.find(
+                                  (o) =>
+                                    o._id === opportunityId ||
+                                    o.id === opportunityId
+                                );
+
+                                if (fullOpportunity) {
+                                  openChat(app, fullOpportunity);
+                                } else {
+                                  toast.error(
+                                    "Unable to open chat - opportunity not found"
+                                  );
+                                }
+                              }}
+                              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                            >
+                              <MessageCircle size={16} />
+                              Message
+                            </button>
+                          )}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
+                    <Briefcase
+                      size={48}
+                      className="mx-auto text-gray-400 mb-4"
+                    />
+                    <p className="text-lg font-medium text-gray-600">
+                      No applications yet.
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Start applying to opportunities!
+                    </p>
+                  </div>
+                )}
               </motion.div>
             )}
           </>
