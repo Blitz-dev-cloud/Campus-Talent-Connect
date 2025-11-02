@@ -48,28 +48,34 @@ interface Opportunity {
   type: string;
   location: string;
   salary?: string;
-  posted_by: string | {
-    _id: string;
-    full_name: string;
-    email: string;
-  };
+  posted_by:
+    | string
+    | {
+        _id: string;
+        full_name: string;
+        email: string;
+      };
   status: string;
 }
 
 interface Application {
   _id?: string;
   id: string;
-  opportunity: string | {
-    _id: string;
-    title: string;
-    company: string;
-    location: string;
-    posted_by: string | {
-      _id: string;
-      full_name: string;
-      email: string;
-    };
-  };
+  opportunity:
+    | string
+    | {
+        _id: string;
+        title: string;
+        company: string;
+        location: string;
+        posted_by:
+          | string
+          | {
+              _id: string;
+              full_name: string;
+              email: string;
+            };
+      };
   opportunity_id: string;
   opportunity_title?: string;
   user_id: string;
@@ -124,31 +130,28 @@ const StudentDashboard = () => {
   } | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
   useEffect(() => {
     const fetchData = async () => {
       if (!user) return;
       try {
         setIsLoading(true);
-        const [profRes, oppRes, appRes] = await Promise.all([
-          api.get("/api/profiles"),
-          api.get("/api/opportunities"),
-          api.get("/api/applications"),
-        ]);
+        
+        // Fetch only the current user's profile (much faster)
+        let userProfile = null;
+        try {
+          console.log("Fetching profile for user:", (user as any)?.id);
+          const profRes = await api.get("/api/profiles/me");
+          userProfile = profRes.data;
+          console.log("Profile found:", userProfile);
+        } catch (error: any) {
+          console.log("No profile found:", error?.response?.status);
+          if (error?.response?.status === 404) {
+            console.log("Profile doesn't exist, will need to create one");
+          }
+        }
 
-        console.log("User ID:", (user as any)?.id);
-        console.log("All profiles:", profRes.data);
-
-        // Find the profile for the current logged-in user by user_id
-        // Convert both to string for comparison since MongoDB returns ObjectId
-        const userProfile = profRes.data.find(
-          (p: any) =>
-            String(p.user_id) === String((user as any)?.id) ||
-            p.user_id?._id === (user as any)?.id ||
-            p.user_id === (user as any)?.id
-        );
-        console.log("Found user profile:", userProfile);
-
-        setProfile(userProfile || null);
+        setProfile(userProfile);
         setEditedProfile(
           userProfile || {
             user_id: (user as any)?.id,
@@ -161,6 +164,13 @@ const StudentDashboard = () => {
             role: (user as any)?.role,
           }
         );
+        
+        // Fetch opportunities and applications in parallel
+        const [oppRes, appRes] = await Promise.all([
+          api.get("/api/opportunities"),
+          api.get("/api/applications"),
+        ]);
+
         setOpportunities(oppRes.data);
         setApplications(appRes.data);
       } catch (error) {
@@ -202,10 +212,15 @@ const StudentDashboard = () => {
       let response;
       const profileId = profile?._id;
 
+      console.log("Saving profile. Current profile:", profile);
+      console.log("Profile ID:", profileId);
+      console.log("Edited profile data:", editedProfile);
+
       if (profileId) {
         // Update existing profile
         console.log("Updating profile:", profileId);
         response = await api.put(`/api/profiles/${profileId}`, editedProfile);
+        console.log("Update response:", response.data);
       } else {
         // Create new profile
         const newProfile = {
@@ -215,6 +230,7 @@ const StudentDashboard = () => {
         };
         console.log("Creating profile with data:", newProfile);
         response = await api.post("/api/profiles", newProfile);
+        console.log("Create response:", response.data);
       }
       setProfile(response.data);
       setEditedProfile(response.data);
@@ -230,19 +246,11 @@ const StudentDashboard = () => {
         error.response?.data?.message?.includes("already exists")
       ) {
         try {
-          // Fetch all profiles and find the user's profile
-          const profilesRes = await api.get("/api/profiles");
-          const existingProfile = profilesRes.data.find(
-            (p: any) =>
-              String(p.user_id) === String((user as any)?.id) ||
-              p.user_id?._id === (user as any)?.id ||
-              p.user_id === (user as any)?.id
-          );
-
-          if (existingProfile) {
-            // Update the existing profile
+          // Try to get the profile using /me endpoint first
+          const meRes = await api.get("/api/profiles/me");
+          if (meRes.data) {
             const updateRes = await api.put(
-              `/api/profiles/${existingProfile._id}`,
+              `/api/profiles/${meRes.data._id}`,
               editedProfile
             );
             setProfile(updateRes.data);
@@ -276,14 +284,14 @@ const StudentDashboard = () => {
     // Handle posted_by - it could be a string (ID) or populated object
     let facultyId = "";
     let facultyName = "Faculty/Alumni";
-    
+
     console.log("openChat received opp.posted_by:", opp.posted_by);
     console.log("Type of posted_by:", typeof opp.posted_by);
-    
-    if (typeof opp.posted_by === 'string') {
+
+    if (typeof opp.posted_by === "string") {
       facultyId = opp.posted_by;
       console.log("posted_by is string ID:", facultyId);
-    } else if (opp.posted_by && typeof opp.posted_by === 'object') {
+    } else if (opp.posted_by && typeof opp.posted_by === "object") {
       facultyId = opp.posted_by._id;
       facultyName = opp.posted_by.full_name;
       console.log("posted_by is object:", { facultyId, facultyName });
@@ -294,7 +302,7 @@ const StudentDashboard = () => {
       facultyId,
       facultyName,
       opportunityTitle: opp.title,
-      opportunityObject: opp
+      opportunityObject: opp,
     });
 
     setSelectedChat({
@@ -426,9 +434,9 @@ const StudentDashboard = () => {
         </motion.div>
 
         {isLoading ? (
-          <div className="text-center py-20">
-            <div className="inline-block w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-6 text-gray-600 text-lg">
+          <div className="text-center py-32">
+            <div className="inline-block w-20 h-20 border-[6px] border-indigo-200 border-t-indigo-600 rounded-full animate-spin shadow-lg"></div>
+            <p className="mt-8 text-gray-600 text-xl font-semibold animate-pulse">
               Loading your dashboard...
             </p>
           </div>
@@ -439,50 +447,50 @@ const StudentDashboard = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden"
+                className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-purple-100/50"
               >
                 {/* Profile Header */}
-                <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-8 text-white relative rounded-t-2xl border-b-4 border-indigo-700/30">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-4">
+                <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-10 text-white relative">
+                  {/* Decorative elements */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/20 rounded-full blur-2xl -ml-24 -mb-24"></div>
+
+                  <div className="flex justify-between items-start relative z-10">
+                    <div className="flex items-center gap-6">
                       <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="w-20 h-20 bg-white/25 backdrop-blur-sm rounded-full flex items-center justify-center border-4 border-white/40 shadow-xl"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border-4 border-white/30 shadow-2xl"
                       >
-                        <User size={40} className="text-white drop-shadow-lg" />
+                        <User size={48} className="text-white drop-shadow-lg" />
                       </motion.div>
                       <div>
-                        <h2 className="text-3xl font-bold drop-shadow-lg">
-                          {" "}
+                        <h2 className="text-4xl font-black drop-shadow-lg mb-2">
                           {profile?.full_name ||
                             (user as any)?.full_name ||
                             (user as any)?.username ||
-                            "Your Name"}{" "}
+                            "Your Name"}
                         </h2>
-                        <p className="text-white/90 text-lg mt-1">
+                        <p className="text-white/95 text-lg font-medium">
                           {(user as any)?.email}
                         </p>
-                        <p className="text-white/70 text-sm capitalize mt-1 bg-white/20 inline-block px-3 py-1 rounded-full">
-                          {" "}
-                          {(user as any)?.role || "Student"}{" "}
+                        <p className="text-white/80 text-sm capitalize mt-2 bg-white/25 inline-block px-4 py-1.5 rounded-full font-semibold backdrop-blur-sm">
+                          {(user as any)?.role || "Student"}
                         </p>
                       </div>
                     </div>
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
+                      whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={isEditing ? saveProfile : handleEditToggle}
-                      className="px-6 py-3 bg-white text-indigo-600 rounded-xl font-semibold hover:shadow-2xl transition-all flex items-center gap-2 shadow-lg"
+                      className="px-8 py-3.5 bg-white text-indigo-600 rounded-xl font-bold hover:shadow-2xl transition-all flex items-center gap-2 shadow-xl border-2 border-white/50"
                     >
                       {isEditing ? (
                         <>
-                          {" "}
-                          <Save size={18} /> Save Changes{" "}
+                          <Save size={20} /> Save Changes
                         </>
                       ) : (
                         <>
-                          {" "}
-                          <Edit2 size={18} /> Edit Profile{" "}
+                          <Edit2 size={20} /> Edit Profile
                         </>
                       )}
                     </motion.button>
@@ -891,30 +899,51 @@ const StudentDashboard = () => {
                               {app.status === "accepted" && (
                                 <button
                                   onClick={() => {
-                                    console.log("Message button clicked for app:", app);
-                                    console.log("app.opportunity:", app.opportunity);
-                                    
+                                    console.log(
+                                      "Message button clicked for app:",
+                                      app
+                                    );
+                                    console.log(
+                                      "app.opportunity:",
+                                      app.opportunity
+                                    );
+
                                     // Get the opportunity ID from the populated object or string
                                     let opportunityId = "";
-                                    if (typeof app.opportunity === 'object' && app.opportunity !== null) {
+                                    if (
+                                      typeof app.opportunity === "object" &&
+                                      app.opportunity !== null
+                                    ) {
                                       opportunityId = app.opportunity._id;
                                     } else {
                                       opportunityId = app.opportunity;
                                     }
-                                    
-                                    console.log("Looking for opportunity ID:", opportunityId);
-                                    
+
+                                    console.log(
+                                      "Looking for opportunity ID:",
+                                      opportunityId
+                                    );
+
                                     // Find the full opportunity from the opportunities list
                                     const fullOpportunity = opportunities.find(
-                                      (o) => o._id === opportunityId || o.id === opportunityId
+                                      (o) =>
+                                        o._id === opportunityId ||
+                                        o.id === opportunityId
                                     );
-                                    
+
                                     if (fullOpportunity) {
-                                      console.log("Found full opportunity:", fullOpportunity);
+                                      console.log(
+                                        "Found full opportunity:",
+                                        fullOpportunity
+                                      );
                                       openChat(app, fullOpportunity);
                                     } else {
-                                      console.error("Opportunity not found in opportunities list!");
-                                      toast.error("Unable to open chat - opportunity not found");
+                                      console.error(
+                                        "Opportunity not found in opportunities list!"
+                                      );
+                                      toast.error(
+                                        "Unable to open chat - opportunity not found"
+                                      );
                                     }
                                   }}
                                   className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center gap-2"

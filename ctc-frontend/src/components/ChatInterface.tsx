@@ -66,13 +66,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     try {
       const response = await api.get(`/api/messages/${applicationId}`);
       setMessages(response.data);
-      
+
       // Mark unread messages as read
       const unreadMessages = response.data.filter(
-        (msg: Message) => 
-          msg.receiver_id._id === user?.id && !msg.read
+        (msg: Message) => msg.receiver_id._id === user?.id && !msg.read
       );
-      
+
       for (const msg of unreadMessages) {
         await api.patch(`/api/messages/${msg._id}/read`);
       }
@@ -85,7 +84,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!newMessage.trim()) return;
 
     try {
@@ -95,9 +94,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         receiver_id: receiverId,
         message: newMessage.trim(),
       };
-      
+
       console.log("Sending message with data:", messageData);
-      
+
       const response = await api.post("/api/messages", messageData);
 
       setMessages([...messages, response.data]);
@@ -119,7 +118,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (days === 0) {
-      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
     } else if (days === 1) {
       return "Yesterday";
     } else if (days < 7) {
@@ -182,7 +184,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                   key={msg._id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${isSender ? "justify-end" : "justify-start"}`}
+                  className={`flex ${
+                    isSender ? "justify-end" : "justify-start"
+                  }`}
                 >
                   <div
                     className={`max-w-[70%] rounded-2xl px-4 py-2 ${

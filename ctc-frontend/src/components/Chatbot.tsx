@@ -21,37 +21,63 @@ interface Opportunity {
 
 // Simple formatter to convert markdown-like text to formatted output
 const formatBotMessage = (text: string): React.ReactElement => {
-  const lines = text.split('\n');
-  
+  const lines = text.split("\n");
+
   return (
     <div className="space-y-2">
       {lines.map((line, index) => {
         // Bold text **text**
-        let formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
-        
+        let formattedLine = line.replace(
+          /\*\*(.*?)\*\*/g,
+          '<strong class="font-semibold">$1</strong>'
+        );
+
         // Italic text *text*
-        formattedLine = formattedLine.replace(/\*(.*?)\*/g, '<em class="italic text-gray-600">$1</em>');
-        
+        formattedLine = formattedLine.replace(
+          /\*(.*?)\*/g,
+          '<em class="italic text-gray-600">$1</em>'
+        );
+
         // Bullet points
-        if (line.trim().startsWith('•') || line.trim().startsWith('-')) {
+        if (line.trim().startsWith("•") || line.trim().startsWith("-")) {
           return (
             <div key={index} className="flex gap-2 ml-2">
               <span className="text-blue-600">•</span>
-              <span dangerouslySetInnerHTML={{ __html: formattedLine.replace(/^[•-]\s*/, '') }} />
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: formattedLine.replace(/^[•-]\s*/, ""),
+                }}
+              />
             </div>
           );
         }
-        
+
         // Emoji lines (keep as is) - check for common emojis
-        if (line.trim().match(/^[\u{1F4CB}\u{1F3E2}\u{1F4CD}\u{1F4BC}\u{1F4B0}\u{1F4A1}\u{1F393}\u{2728}\u{1F465}\u{1F4DD}]/u)) {
-          return <div key={index} dangerouslySetInnerHTML={{ __html: formattedLine }} />;
+        if (
+          line
+            .trim()
+            .match(
+              /^[\u{1F4CB}\u{1F3E2}\u{1F4CD}\u{1F4BC}\u{1F4B0}\u{1F4A1}\u{1F393}\u{2728}\u{1F465}\u{1F4DD}]/u
+            )
+        ) {
+          return (
+            <div
+              key={index}
+              dangerouslySetInnerHTML={{ __html: formattedLine }}
+            />
+          );
         }
-        
+
         // Regular lines
         if (line.trim()) {
-          return <div key={index} dangerouslySetInnerHTML={{ __html: formattedLine }} />;
+          return (
+            <div
+              key={index}
+              dangerouslySetInnerHTML={{ __html: formattedLine }}
+            />
+          );
         }
-        
+
         // Empty lines (spacing)
         return <div key={index} className="h-1" />;
       })}
@@ -146,7 +172,9 @@ const Chatbot = () => {
     const formatted = opportunities
       .map((opp, index) => {
         const salary =
-          opp.salary && opp.salary !== "" ? `💰 $${opp.salary}` : "💰 Not specified";
+          opp.salary && opp.salary !== ""
+            ? `💰 $${opp.salary}`
+            : "💰 Not specified";
         return `**${index + 1}. ${opp.title}**
    🏢 Company: ${opp.company}
    📍 Location: ${opp.location}

@@ -105,21 +105,17 @@ const FacultyDashboard = () => {
     if (!user) return;
     try {
       setIsLoading(true);
-      const [profRes, oppRes, appRes, usersRes, profilesRes] =
-        await Promise.all([
-          api.get("/api/profiles"),
-          api.get("/api/opportunities/my-opportunities"),
-          api.get("/api/applications"),
-          api.get("/api/users"),
-          api.get("/api/profiles"),
-        ]);
-      const userProfile = profRes.data.find(
-        (p: Profile) =>
-          String(p.user_id) === String(user?.id) ||
-          (p.user_id as any)?._id === user?.id ||
-          p.user_id === user?.id
-      );
-      setProfile(userProfile || null);
+      
+      // Fetch user's own profile first (fastest)
+      let userProfile = null;
+      try {
+        const profRes = await api.get("/api/profiles/me");
+        userProfile = profRes.data;
+      } catch (error) {
+        console.log("No profile found");
+      }
+      
+      setProfile(userProfile);
       setEditedProfile(
         userProfile || {
           user_id: user?.id || "",
@@ -131,15 +127,21 @@ const FacultyDashboard = () => {
           role: user?.role || "faculty",
         }
       );
+      
+      // Fetch other data in parallel
+      const [oppRes, appRes, usersRes, profilesRes] = await Promise.all([
+        api.get("/api/opportunities/my-opportunities"),
+        api.get("/api/applications"),
+        api.get("/api/users"),
+        api.get("/api/profiles"),
+      ]);
 
       setOpportunities(oppRes.data);
-      console.log("My opportunities:", oppRes.data);
-      console.log("All applications:", appRes.data);
+      
       // Get applications for faculty's opportunities
       const myOpportunityIds = oppRes.data.map(
         (opp: Opportunity) => opp._id || opp.id
       );
-      console.log("My opportunity IDs:", myOpportunityIds);
 
       const myApplications = appRes.data.filter((app: Application) => {
         const appOppId =

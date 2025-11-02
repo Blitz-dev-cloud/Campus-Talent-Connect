@@ -28,8 +28,8 @@ router.get("/", auth, async (req, res) => {
         select: "title company location posted_by",
         populate: {
           path: "posted_by",
-          select: "full_name email"
-        }
+          select: "full_name email",
+        },
       })
       .populate("student_id", "email full_name")
       .sort({ created_at: -1 });
