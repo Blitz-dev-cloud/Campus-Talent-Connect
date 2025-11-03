@@ -239,22 +239,22 @@ const NotificationBell = () => {
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 z-40"
+              className="fixed inset-0 z-[60]"
               onClick={() => setIsOpen(false)}
             />
 
-            {/* Dropdown Panel */}
+            {/* Dropdown Panel - Compact on all screens */}
             <motion.div
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 mt-3 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-50"
+              className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-[70] max-h-[70vh] sm:max-h-[80vh] flex flex-col"
             >
               {/* Header */}
-              <div className="px-5 py-4 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-between">
+              <div className="px-4 py-2.5 sm:px-5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-between flex-shrink-0">
                 <div>
-                  <h3 className="font-bold text-white text-lg">
+                  <h3 className="font-bold text-white text-sm sm:text-base">
                     Notifications
                   </h3>
                   <p className="text-white/80 text-xs">{unreadCount} unread</p>
@@ -262,7 +262,7 @@ const NotificationBell = () => {
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs text-white/90 hover:text-white bg-white/20 px-3 py-1.5 rounded-lg hover:bg-white/30 transition-all"
+                    className="text-xs text-white/90 hover:text-white bg-white/20 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg hover:bg-white/30 transition-all"
                   >
                     Mark all read
                   </button>
@@ -270,10 +270,10 @@ const NotificationBell = () => {
               </div>
 
               {/* Notifications List */}
-              <div className="max-h-96 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <div className="p-8 text-center">
-                    <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <div className="p-6 text-center">
+                    <Bell className="w-10 h-10 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-500 text-sm">
                       No notifications yet
                     </p>
@@ -288,28 +288,28 @@ const NotificationBell = () => {
                         key={notif.id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className={`px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${
+                        className={`px-3 py-2.5 sm:px-4 sm:py-3 hover:bg-gray-50 active:bg-gray-100 transition-colors cursor-pointer ${
                           !notif.read ? "bg-blue-50/50" : ""
                         }`}
                         onClick={() => markAsRead(notif.id)}
                       >
-                        <div className="flex gap-3">
-                          <div className="flex-shrink-0 mt-1">
+                        <div className="flex gap-2.5">
+                          <div className="flex-shrink-0 mt-0.5">
                             {getIcon(notif.type)}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
-                              <h4 className="font-semibold text-gray-900 text-sm">
+                              <h4 className="font-semibold text-gray-900 text-xs sm:text-sm leading-snug">
                                 {notif.title}
                               </h4>
                               {!notif.read && (
                                 <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" />
                               )}
                             </div>
-                            <p className="text-gray-600 text-sm mt-1 line-clamp-2">
+                            <p className="text-gray-600 text-xs mt-0.5 sm:mt-1 line-clamp-2 leading-relaxed">
                               {notif.message}
                             </p>
-                            <p className="text-gray-400 text-xs mt-2">
+                            <p className="text-gray-400 text-xs mt-1">
                               {formatDate(notif.createdAt)}
                             </p>
                           </div>
@@ -322,9 +322,12 @@ const NotificationBell = () => {
 
               {/* Footer */}
               {notifications.length > 0 && (
-                <div className="px-5 py-3 bg-gray-50 border-t border-gray-100 text-center">
-                  <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                    View all notifications
+                <div className="px-3 py-2 sm:px-4 sm:py-2.5 bg-gray-50 border-t border-gray-100 text-center flex-shrink-0">
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium active:text-blue-800 transition-colors"
+                  >
+                    Close
                   </button>
                 </div>
               )}

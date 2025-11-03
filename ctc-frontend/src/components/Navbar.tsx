@@ -76,11 +76,16 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
               setUserName(userProfile.full_name);
             } else if ((user as any)?.email) {
               // Extract name from email as last resort
-              const emailName = (user as any).email.split("@")[0].replace(/[._-]/g, ' ');
-              const words = emailName.split(' ');
+              const emailName = (user as any).email
+                .split("@")[0]
+                .replace(/[._-]/g, " ");
+              const words = emailName.split(" ");
               const capitalizedName = words
-                .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                .join(' ');
+                .map(
+                  (word: string) =>
+                    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                )
+                .join(" ");
               setUserName(capitalizedName);
             } else {
               setUserName("User");
@@ -88,11 +93,16 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
           } else {
             // Fallback to email-based name
             if ((user as any)?.email) {
-              const emailName = (user as any).email.split("@")[0].replace(/[._-]/g, ' ');
-              const words = emailName.split(' ');
+              const emailName = (user as any).email
+                .split("@")[0]
+                .replace(/[._-]/g, " ");
+              const words = emailName.split(" ");
               const capitalizedName = words
-                .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                .join(' ');
+                .map(
+                  (word: string) =>
+                    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                )
+                .join(" ");
               setUserName(capitalizedName);
             } else {
               setUserName("User");
@@ -102,11 +112,16 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
           console.error("Error fetching user name:", error);
           // Try to use email as name
           if ((user as any)?.email) {
-            const emailName = (user as any).email.split("@")[0].replace(/[._-]/g, ' ');
-            const words = emailName.split(' ');
+            const emailName = (user as any).email
+              .split("@")[0]
+              .replace(/[._-]/g, " ");
+            const words = emailName.split(" ");
             const capitalizedName = words
-              .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-              .join(' ');
+              .map(
+                (word: string) =>
+                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              )
+              .join(" ");
             setUserName(capitalizedName);
           } else {
             setUserName("User");

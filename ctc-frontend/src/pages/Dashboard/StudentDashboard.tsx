@@ -1179,37 +1179,40 @@ const StudentDashboard = () => {
         )}
       </div>
       {isApplyModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto p-2 sm:p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 50 }}
-            className="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 my-8 shadow-2xl border border-gray-200"
+            className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 max-w-2xl w-full mx-2 sm:mx-4 my-2 sm:my-4 shadow-2xl border border-gray-200 max-h-[95vh] flex flex-col"
           >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <div className="flex justify-between items-center mb-3 sm:mb-4 flex-shrink-0">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent line-clamp-2">
                 Apply to {selectedOpportunity?.title}
               </h2>
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsApplyModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2 rounded-full transition-all"
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2 rounded-full transition-all flex-shrink-0"
               >
-                <X size={24} />
+                <X size={20} className="sm:w-6 sm:h-6" />
               </motion.button>
             </div>
 
-            <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-4 sm:space-y-6 overflow-y-auto pr-2 custom-scrollbar flex-1">
               {/* Academic Details */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-200">
-                <h3 className="font-bold text-blue-900 mb-4 flex items-center gap-2 text-lg">
-                  <GraduationCap size={20} className="text-blue-600" />
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-200">
+                <h3 className="font-bold text-blue-900 mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg">
+                  <GraduationCap
+                    size={18}
+                    className="text-blue-600 sm:w-5 sm:h-5"
+                  />
                   Academic Information
                 </h3>
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
                       CGPA *
                     </label>
                     <input
@@ -1222,12 +1225,12 @@ const StudentDashboard = () => {
                       onChange={(e) =>
                         handleApplicationInput("cgpa", e.target.value)
                       }
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm"
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 border-2 border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm text-sm sm:text-base"
                       placeholder="e.g., 8.5"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
                       10th Percentage *
                     </label>
                     <input
@@ -1243,12 +1246,12 @@ const StudentDashboard = () => {
                           e.target.value
                         )
                       }
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm"
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 border-2 border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm text-sm sm:text-base"
                       placeholder="e.g., 85.5"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
                       12th Percentage *
                     </label>
                     <input
@@ -1264,7 +1267,7 @@ const StudentDashboard = () => {
                           e.target.value
                         )
                       }
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm"
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 border-2 border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm text-sm sm:text-base"
                       placeholder="e.g., 90.0"
                     />
                   </div>
@@ -1273,8 +1276,8 @@ const StudentDashboard = () => {
 
               {/* Cover Letter */}
               <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
-                  <Mail size={16} className="text-indigo-600" />
+                <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                  <Mail size={14} className="text-indigo-600 sm:w-4 sm:h-4" />
                   Cover Letter *
                 </label>
                 <textarea
@@ -1282,8 +1285,8 @@ const StudentDashboard = () => {
                   onChange={(e) =>
                     handleApplicationInput("cover_letter", e.target.value)
                   }
-                  rows={6}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm resize-none"
+                  rows={4}
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 border-2 border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm resize-none text-sm sm:text-base"
                   placeholder="Write a cover letter explaining why you're a good fit for this opportunity..."
                   required
                 />
@@ -1291,19 +1294,22 @@ const StudentDashboard = () => {
 
               {/* Resume Upload */}
               <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
-                  <FileText size={16} className="text-indigo-600" />
+                <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                  <FileText
+                    size={14}
+                    className="text-indigo-600 sm:w-4 sm:h-4"
+                  />
                   Upload Resume (PDF) *
                 </label>
                 <input
                   type="file"
                   accept=".pdf"
                   onChange={handleResumeChange}
-                  className="w-full file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-blue-50 file:to-indigo-50 file:text-indigo-700 hover:file:from-blue-100 hover:file:to-indigo-100 file:cursor-pointer file:transition-all file:shadow-md border-2 border-dashed border-gray-300 rounded-xl p-2"
+                  className="w-full text-sm file:mr-3 file:py-2 file:px-4 sm:file:py-3 sm:file:px-6 file:rounded-lg sm:file:rounded-xl file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-gradient-to-r file:from-blue-50 file:to-indigo-50 file:text-indigo-700 hover:file:from-blue-100 hover:file:to-indigo-100 file:cursor-pointer file:transition-all file:shadow-md border-2 border-dashed border-gray-300 rounded-lg sm:rounded-xl p-2"
                 />
                 {applicationForm.resume_name && (
-                  <p className="mt-2 text-sm text-green-600 flex items-center gap-2 font-medium">
-                    <CheckCircle size={16} />
+                  <p className="mt-2 text-xs sm:text-sm text-green-600 flex items-center gap-2 font-medium">
+                    <CheckCircle size={14} className="sm:w-4 sm:h-4" />
                     Selected: {applicationForm.resume_name}
                   </p>
                 )}
@@ -1311,22 +1317,22 @@ const StudentDashboard = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 mt-8 pt-6 border-t-2 border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t-2 border-gray-200 flex-shrink-0">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={submitApplication}
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
+                className="w-full sm:flex-1 px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-lg sm:rounded-xl font-bold hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base sm:text-lg"
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 sm:border-3 border-white border-t-transparent rounded-full animate-spin"></div>
                     Submitting...
                   </>
                 ) : (
                   <>
-                    <Send size={20} />
+                    <Send size={18} className="sm:w-5 sm:h-5" />
                     Submit Application
                   </>
                 )}
@@ -1335,7 +1341,7 @@ const StudentDashboard = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsApplyModalOpen(false)}
-                className="px-6 py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all border-2 border-gray-300"
+                className="w-full sm:w-auto px-4 py-3 sm:px-6 sm:py-4 bg-gray-100 text-gray-700 rounded-lg sm:rounded-xl font-semibold hover:bg-gray-200 transition-all border-2 border-gray-300"
               >
                 Cancel
               </motion.button>
